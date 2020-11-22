@@ -23,7 +23,7 @@ public class Zombie {
     }
 
     public String toString() {
-        return iD + " | " + iDTipo + " | " + nomeEquipa + " | " + nome +
+        return iD + " | Zombie | " + nomeEquipa + " | " + nome +
                 " " + equipDestruidos + " @ (" + x + ", " + y +")";
     }
 }

@@ -25,7 +25,7 @@ public class Humano {
     }
 
     public String toString() {
-        return iD + " | " + iDTipo + " | " + nomeEquipa + " | " + nome +
+        return iD + " | Humano | " + nomeEquipa + " | " + nome +
                 " " + equipApanhados + " @ (" + x + ", " + y +")";
     }
 

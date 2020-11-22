@@ -48,11 +48,9 @@ public class TWDGameManager {
                     }
                     break;
                     case 4: {
-                        if (Integer.parseInt(linhaInfo[1]) == 0) {
                             equipamentos.put(Integer.parseInt(linhaInfo[0]),
                                     new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                             Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
-                        }
                     }
                     break;
                     case 5: {
@@ -121,6 +119,7 @@ public class TWDGameManager {
                         k.x = xD;
                         k.y = yD;
                         nrTurnos++;
+                        k.equipApanhados++;
                         currentTeamId = 1;
                         confirm.set(true);
                         equipamentos.remove(getElementId(xD, yD));
@@ -143,6 +142,7 @@ public class TWDGameManager {
                         k.x = xD;
                         k.y = yD;
                         nrTurnos++;
+                        k.equipDestruidos++;
                         currentTeamId = 0;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
@@ -161,7 +161,7 @@ public class TWDGameManager {
     }
 
     public boolean gameIsOver() {
-        return nrTurnos > 12;
+        return nrTurnos >= 12;
     }
 
     public List<String> getAuthors() {
