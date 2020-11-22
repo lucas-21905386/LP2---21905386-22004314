@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TWDGameManager {
     static List<Humano> humanos = new ArrayList<>();
@@ -65,52 +66,72 @@ public class TWDGameManager {
         return true;
     }
 
-    public int[] getWorldSize() {
-        return grid;
-    }
-
-    public int getInitialTeam() {
-        return first;
-    }
-
-    public List<Humano> getHumans() {
-        return humanos;
-    }
-
     public List<Zombie> getZombies() {
         return zombies;
     }
 
+    public int[] getWorldSize() {
+
+        return grid;
+        }
+
+    public int getInitialTeam()
+    {
+        return first;
+    }
+
+    public List<Humano> getHumans() {
+
+        return humanos;
+    }
+
     public boolean move(int xO, int yO, int xD, int yD) {
+
         return true;
     }
 
     public boolean gameIsOver() {
+
         return true;
     }
 
     public List<String> getAuthors() {
+
         return new ArrayList<>();
     }
 
     public int getCurrentTeamId() {
+
         return 0;
     }
 
     public int getElementId(int x, int y) {
+
         return 0;
     }
 
     public List<String> getSurvivors() {
+
         return new ArrayList<>();
     }
 
     public boolean isDay() {
+
         return true;
     }
 
+
     public boolean hasEquipment(int creatureId, int equipmentTypeId) {
-        return true;
+        AtomicBoolean confirma = new AtomicBoolean();
+        confirma.set(false);
+        humanos.forEach(k -> {
+            if (k.iD == creatureId && k.equip != null) {
+                if (k.equip.tipo == equipmentTypeId) {
+                    confirma.set(true);
+                }
+            }
+        });
+        return confirma.get();
     }
 
 }

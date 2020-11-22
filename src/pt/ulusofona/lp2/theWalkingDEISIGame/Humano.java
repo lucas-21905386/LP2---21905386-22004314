@@ -3,6 +3,7 @@ package pt.ulusofona.lp2.theWalkingDEISIGame;
 public class Humano {
     int iD, iDTipo, equipApanhados, x, y;
     String nome, nomeEquipa;
+    Equipamentos equip;
 
     Humano (int iD, int iDTipo, String nome, int x, int y) {
         this.iD = iD;
@@ -12,14 +13,15 @@ public class Humano {
         this.y = y;
         this.equipApanhados = 0;
         this.nomeEquipa = "Os Vivos";
+        this.equip = null;
     }
 
     public int getId() {
-        return 0;
+        return this.iD;
     }
 
     public String getImagePNG() {
-        return null;
+        return "human.png";
     }
 
     public String toString() {

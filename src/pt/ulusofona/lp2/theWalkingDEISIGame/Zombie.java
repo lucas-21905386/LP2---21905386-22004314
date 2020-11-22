@@ -1,7 +1,5 @@
 package pt.ulusofona.lp2.theWalkingDEISIGame;
 
-import java.util.ArrayList;
-
 public class Zombie {
     int iD, iDTipo, equipDestruidos, x, y;
     String nome, nomeEquipa;
@@ -17,14 +15,15 @@ public class Zombie {
     }
 
     public int getId() {
-        return 0;
+        return this.iD;
     }
 
     public String getImagePNG() {
-        return null;
+        return "zombie.png";
     }
 
     public String toString() {
-        return "<ID> | <Tipo> | <Nome Equipa> | <Nome> <Equipamentos> @ (<x>, <y>)";
+        return iD + " | " + iDTipo + " | " + nomeEquipa + " | " + nome +
+                " " + equipDestruidos + " @ (" + x + ", " + y +")";
     }
 }
