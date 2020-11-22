@@ -208,14 +208,11 @@ public class TWDGameManager {
         return sobreviventes;
     }
 
+
     public boolean isDay() {
-        if (nrTurnos == 0 || (nrTurnos % 4) == 1 || (nrTurnos % 4) == 2) {
-            return true;
-        } else if ((nrTurnos % 4) == 0 || (nrTurnos % 4) == 3) {
-            return false;
-        }
-        return false;
+        return (nrTurnos/2) % 2 == 0;
     }
+
 
     public boolean hasEquipment(int creatureId, int equipmentTypeId) {
         AtomicBoolean confirma = new AtomicBoolean();
