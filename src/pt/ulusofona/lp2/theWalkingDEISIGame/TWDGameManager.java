@@ -12,8 +12,7 @@ public class TWDGameManager {
     static List<Zombie> zombies = new ArrayList<>();
     static List<Equipamentos> equipamentos = new ArrayList<>();
     static int[] grid;
-    static int first, totalCriaturas, totalEquipamentos;
-
+    static int first, totalCriaturas, totalEquipamentos,nrTurnos=0;
 
     public TWDGameManager () {
     }
@@ -116,8 +115,10 @@ public class TWDGameManager {
     }
 
     public boolean isDay() {
-
-        return true;
+        if ((nrTurnos % 4) == 1 || (nrTurnos % 4) == 2) {
+            return true;
+        }
+        return false;
     }
 
 
