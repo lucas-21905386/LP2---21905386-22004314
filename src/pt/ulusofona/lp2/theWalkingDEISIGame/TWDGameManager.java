@@ -117,8 +117,10 @@ public class TWDGameManager {
     }
 
     public boolean isDay() {
-        if ((nrTurnos % 4) == 1 || (nrTurnos % 4) == 2) {
+        if (nrTurnos == 0 || (nrTurnos % 4) == 1 || (nrTurnos % 4) == 2) {
             return true;
+        } else if ((nrTurnos % 4) == 0 || (nrTurnos % 4) == 3) {
+            return false;
         }
         return false;
     }
