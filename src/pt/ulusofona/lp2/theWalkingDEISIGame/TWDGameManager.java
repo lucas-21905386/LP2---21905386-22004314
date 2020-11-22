@@ -213,7 +213,6 @@ public class TWDGameManager {
         return (nrTurnos/2) % 2 == 0;
     }
 
-
     public boolean hasEquipment(int creatureId, int equipmentTypeId) {
         AtomicBoolean confirma = new AtomicBoolean();
         confirma.set(false);
