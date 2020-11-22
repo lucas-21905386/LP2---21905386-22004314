@@ -14,6 +14,8 @@ public class TWDGameManager {
     static int[] grid;
     static int first, totalCriaturas, totalEquipamentos,nrTurnos=0;
 
+
+
     public TWDGameManager () {
     }
 
