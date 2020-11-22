@@ -11,7 +11,7 @@ public class Zombie {
         this.x = x;
         this.y = y;
         this.equipDestruidos = 0;
-        this.nomeEquipa = "Os Vivos";
+        this.nomeEquipa = "Os Outros";
     }
 
     public int getId() {
