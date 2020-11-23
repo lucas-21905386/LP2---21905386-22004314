@@ -1,8 +1,8 @@
 package pt.ulusofona.lp2.theWalkingDEISIGame;
 
 public class Zombie {
-    int iD, iDTipo, equipDestruidos, x, y;
-    String nome, nomeEquipa;
+    private int iD, iDTipo, equipDestruidos, x, y;
+    private String nome, nomeEquipa;
 
     Zombie (int iD, int iDTipo, String nome, int x, int y) {
         this.iD = iD;
@@ -25,5 +25,29 @@ public class Zombie {
     public String toString() {
         return iD + " | Zombie | " + nomeEquipa + " | " + nome +
                 " " + equipDestruidos + " @ (" + x + ", " + y +")";
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setEquipDestruidos() {
+        this.equipDestruidos++;
     }
 }

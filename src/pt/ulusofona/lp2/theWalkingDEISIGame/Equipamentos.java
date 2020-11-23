@@ -1,7 +1,7 @@
 package pt.ulusofona.lp2.theWalkingDEISIGame;
 
 public class Equipamentos {
-    int id, tipo, x, y;
+    private int id, tipo, x, y;
 
     Equipamentos() {
     }
@@ -18,5 +18,17 @@ public class Equipamentos {
 
     public String getImagePNG() {
         return "equipment.png";
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getTipo() {
+        return tipo;
     }
 }

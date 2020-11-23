@@ -56,7 +56,7 @@ public class TWDGameManager {
                     case 5: {
                         if (Integer.parseInt(linhaInfo[1]) == 0) {
                             List<Integer> ids = new ArrayList<>();
-                            zombies.forEach(k -> ids.add(k.iD));
+                            zombies.forEach(k -> ids.add(k.getId()));
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
                                 zombies.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
@@ -64,7 +64,7 @@ public class TWDGameManager {
                         }
                         if (Integer.parseInt(linhaInfo[1]) == 1) {
                             List<Integer> ids = new ArrayList<>();
-                            humanos.forEach(k -> ids.add(k.iD));
+                            humanos.forEach(k -> ids.add(k.getId()));
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
                                 humanos.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
@@ -107,25 +107,25 @@ public class TWDGameManager {
         }
         if (currentTeamId == 0) {
             humanos.forEach(k -> {
-                if (xO == k.x && yO == k.y) {
+                if (xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
-                        if (k.equip != null) {
-                            equipamentos.put(k.equip.id,
-                                    new Equipamentos(k.equip.id, k.equip.tipo, xO, yO));
+                        if (k.getEquip() != null) {
+                            equipamentos.put(k.getEquip().getId(),
+                                    new Equipamentos(k.getEquip().getId(), k.getEquip().getTipo(), xO, yO));
                         }
-                        k.equip = new Equipamentos(equipamentos.get(getElementId(xD, yD)).id,
-                                equipamentos.get(getElementId(xD, yD)).tipo, equipamentos.get(getElementId(xD, yD)).x,
-                                equipamentos.get(getElementId(xD, yD)).y);
-                        k.x = xD;
-                        k.y = yD;
+                        k.setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                equipamentos.get(getElementId(xD, yD)).getTipo(), equipamentos.get(getElementId(xD, yD)).getX(),
+                                equipamentos.get(getElementId(xD, yD)).getY()));
+                        k.setX(xD);
+                        k.setY(yD);
                         nrTurnos++;
-                        k.equipApanhados++;
+                        k.setEquipApanhados();
                         currentTeamId = 1;
                         confirm.set(true);
                         equipamentos.remove(getElementId(xD, yD));
                     } else if (getElementId(xD, yD) == 0) {
-                        k.x = xD;
-                        k.y = yD;
+                        k.setX(xD);
+                        k.setY(yD);
                         nrTurnos++;
                         currentTeamId = 1;
                         confirm.set(true);
@@ -136,18 +136,18 @@ public class TWDGameManager {
             });
         } else {
             zombies.forEach(k -> {
-                if (xO == k.x && yO == k.y) {
+                if (xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
                         equipamentos.remove(getElementId(xD, yD));
-                        k.x = xD;
-                        k.y = yD;
+                        k.setX(xD);
+                        k.setY(yD);
                         nrTurnos++;
-                        k.equipDestruidos++;
+                        k.setEquipDestruidos();
                         currentTeamId = 0;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
-                        k.x = xD;
-                        k.y = yD;
+                        k.setX(xD);
+                        k.setY(yD);
                         nrTurnos++;
                         currentTeamId = 0;
                         confirm.set(true);
@@ -178,18 +178,18 @@ public class TWDGameManager {
     public int getElementId(int x, int y) {
         AtomicInteger id = new AtomicInteger();
         humanos.forEach(k -> {
-            if (x == k.x && y == k.y) {
-                id.set(k.iD);
+            if (x == k.getX() && y == k.getY()) {
+                id.set(k.getId());
             }
         });
         zombies.forEach(k -> {
-            if (x == k.x && y == k.y) {
-                id.set(k.iD);
+            if (x == k.getX() && y == k.getY()) {
+                id.set(k.getId());
             }
         });
         equipamentos.forEach((k, v) -> {
-            if (x == v.x && y == v.y) {
-                id.set(v.id);
+            if (x == v.getX() && y == v.getY()) {
+                id.set(v.getId());
             }
         });
         return id.intValue();
@@ -198,13 +198,13 @@ public class TWDGameManager {
     public List<String> getSurvivors() {
         List<String> sobreviventes = new ArrayList<>();
         sobreviventes.add("Nr. de turnos terminados:");
-        sobreviventes.add(String.valueOf(nrTurnos - 1));
+        sobreviventes.add(String.valueOf(nrTurnos));
         sobreviventes.add("\n");
         sobreviventes.add("OS VIVOS");
-        humanos.forEach(k -> sobreviventes.add(k.iD + " " + k.nome));
+        humanos.forEach(k -> sobreviventes.add(k.getId() + " " + k.getNome()));
         sobreviventes.add("\n");
         sobreviventes.add("OS OUTROS");
-        zombies.forEach(k -> sobreviventes.add(k.iD + " " + k.nome));
+        zombies.forEach(k -> sobreviventes.add(k.getId() + " " + k.getNome()));
         return sobreviventes;
     }
 
@@ -213,12 +213,13 @@ public class TWDGameManager {
         return (nrTurnos/2) % 2 == 0;
     }
 
+
     public boolean hasEquipment(int creatureId, int equipmentTypeId) {
         AtomicBoolean confirma = new AtomicBoolean();
         confirma.set(false);
         humanos.forEach(k -> {
-            if (k.iD == creatureId && k.equip != null) {
-                if (k.equip.tipo == equipmentTypeId) {
+            if (k.getId() == creatureId && k.getEquip() != null) {
+                if (k.getEquip().getTipo() == equipmentTypeId) {
                     confirma.set(true);
                 }
             }
