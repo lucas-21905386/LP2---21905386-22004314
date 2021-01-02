@@ -1,5 +1,6 @@
 package pt.ulusofona.lp2.theWalkingDEISIGame;
 
+
 public class SafeHeaven {
     int x, y;
 
