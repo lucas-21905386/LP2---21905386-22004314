@@ -38,7 +38,21 @@ public abstract class Creature {
     }
 
     public String getImagePNG() {
-        return "";
+        switch (this.iDTipo) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                return "zombie.png";
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                return "human.png";
+            default: return "Desconhecido";
+        }
     }
 
     public String toString(){
