@@ -51,7 +51,7 @@ public abstract class Creature {
             case 8:
             case 9:
                 return "human.png";
-            default: return "Desconhecido";
+            default: return "unknown-piece.png";
         }
     }
 
