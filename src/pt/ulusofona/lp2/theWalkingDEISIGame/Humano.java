@@ -11,6 +11,7 @@ public class Humano extends Creature {
         return equip;
     }
 
+
     public void setEquip(Equipamentos equip) {
         this.equip = equip;
     }
