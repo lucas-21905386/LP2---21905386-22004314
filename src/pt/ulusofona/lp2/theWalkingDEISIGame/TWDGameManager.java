@@ -7,18 +7,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TWDGameManager {
-    static List<Humano> humanos = new ArrayList<>();
-    static List<Zombie> zombies = new ArrayList<>();
-    static HashMap<Integer, Equipamentos> equipamentos = new HashMap<>();
-    static int[] grid;
-    static int first, totalCriaturas, totalEquipamentos, nrTurnos = 0, currentTeamId;
+    HashMap<Integer, Equipamentos> equipamentos = new HashMap<>();
+    List<Creature> criaturas = new ArrayList<>();
+    List<SafeHeaven> safeHeavens = new ArrayList<>();
+    List<Creature> safeHeavenHumanos = new ArrayList<>();
+    List<Creature> foraDeJogo = new ArrayList<>();
+    int[] grid;
+    int first, totalCriaturas, totalEquipamentos, totalSafeHeavens, nrTurnos = 0, semMortes = 0, currentTeamId;
 
     public TWDGameManager () {
     }
 
     void reset () {
-        humanos.clear();
-        zombies.clear();
+        criaturas.clear();
+        safeHeavens.clear();
+        safeHeavenHumanos.clear();
+        foraDeJogo.clear();
         equipamentos.clear();
         nrTurnos = 0;
     }
@@ -42,9 +46,15 @@ public class TWDGameManager {
                             currentTeamId = Integer.parseInt(linhaInfo[0]);
                         } else if (count == 3) {
                             totalCriaturas = Integer.parseInt(linhaInfo[0]);
-                        } else {
+                        } else if (count == count + 1 + totalCriaturas) {
                             totalEquipamentos = Integer.parseInt(linhaInfo[0]);
+                        } else {
+                            totalSafeHeavens = Integer.parseInt(linhaInfo[0]);
                         }
+                    }
+                    break;
+                    case 2: {
+                        safeHeavens.add(new SafeHeaven(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1])));
                     }
                     break;
                     case 4: {
@@ -54,19 +64,16 @@ public class TWDGameManager {
                     }
                     break;
                     case 5: {
-                        if (Integer.parseInt(linhaInfo[1]) == 0) {
-                            List<Integer> ids = new ArrayList<>();
-                            zombies.forEach(k -> ids.add(k.getId()));
+                        List<Integer> ids = new ArrayList<>();
+                        criaturas.forEach(k -> ids.add(k.getId()));
+                        if (Integer.parseInt(linhaInfo[1]) > 4) {
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
-                                zombies.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
                             }
-                        }
-                        if (Integer.parseInt(linhaInfo[1]) == 1) {
-                            List<Integer> ids = new ArrayList<>();
-                            humanos.forEach(k -> ids.add(k.getId()));
+                        } else if (Integer.parseInt(linhaInfo[1]) < 5) {
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
-                                humanos.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                criaturas.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
                             }
                         }
@@ -91,58 +98,118 @@ public class TWDGameManager {
         return first;
     }
 
-    public List<Humano> getHumans() {
-        return humanos;
-    }
-
-    public List<Zombie> getZombies() {
-        return zombies;
+    public List<Creature> getCreatures() {
+        return criaturas;
     }
 
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
-        confirm.set(false);
-        if (xD != xO && yD != yO || xD - xO > 1 || xD - xO < -1 || yD - yO > 1 || yD - yO < -1) {
-            return false;
-        }
-        if (currentTeamId == 0) {
-            humanos.forEach(k -> {
-                if (xO == k.getX() && yO == k.getY()) {
-                    if (getElementId(xD, yD) < 0) {
-                        if (k.getEquip() != null) {
-                            equipamentos.put(k.getEquip().getId(),
-                                    new Equipamentos(k.getEquip().getId(), k.getEquip().getTipo(), xO, yO));
+        confirm.set(true);
+        criaturas.forEach(k -> {
+            if (xO == k.getX() && yO == k.getY()) {
+                switch (k.getiDTipo()) {
+                    case 5:
+                    case 0: {
+                        if (new VerificarMov().crianca(xO, yO, xD, yD)) {
+                            break;
+                        } else {
+                            confirm.set(false);
                         }
-                        k.setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
-                                equipamentos.get(getElementId(xD, yD)).getTipo(), equipamentos.get(getElementId(xD, yD)).getX(),
+                    }
+                    break;
+                    case 6:
+                    case 1: {
+                        if (new VerificarMov().adulto(xO, yO, xD, yD)) {
+                            break;
+                        } else {
+                            confirm.set(false);
+                        }
+                    }
+                    break;
+                    case 7:
+                    case 2: {
+                        if (new VerificarMov().militar(xO, yO, xD, yD)) {
+                            break;
+                        } else {
+                            confirm.set(false);
+                        }
+                    }
+                    break;
+                    case 3:
+                    case 8: {
+                        if (new VerificarMov().idoso(xO, yO, xD, yD, k.getiDTipo())) {
+                            break;
+                        } else {
+                            confirm.set(false);
+                        }
+                    }
+                    break;
+                    case 4: {
+                        if (new VerificarMov().vampiro(xO, yO, xD, yD)) {
+                            break;
+                        } else {
+                            confirm.set(false);
+                        }
+                    }
+                    break;
+                    case 9: {
+                        if (new VerificarMov().cao(xO, yO, xD, yD)) {
+                            break;
+                        } else {
+                            confirm.set(false);
+                        }
+                    }
+                }
+            }
+        });
+        if (!confirm.get()) {
+            return confirm.get();
+        }
+        if (currentTeamId == 10) {
+            criaturas.forEach(k -> {
+                if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
+                    if (getElementId(xD, yD) < 0) {
+                        if (((Humano) k).getEquip() != null) {
+                            equipamentos.put(((Humano) k).getEquip().getId(),
+                                    new Equipamentos(((Humano) k).getEquip().getId(),
+                                            ((Humano) k).getEquip().getTipo(), xO, yO));
+                        }
+                        ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                equipamentos.get(getElementId(xD, yD)).getTipo(),
+                                equipamentos.get(getElementId(xD, yD)).getX(),
                                 equipamentos.get(getElementId(xD, yD)).getY()));
+                        k.setContarEquip();
+                        equipamentos.remove(getElementId(xD, yD));
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        k.setEquipApanhados();
-                        currentTeamId = 1;
+                        semMortes++;
+                        currentTeamId = 20;
                         confirm.set(true);
-                        equipamentos.remove(getElementId(xD, yD));
                     } else if (getElementId(xD, yD) == 0) {
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        currentTeamId = 1;
+                        currentTeamId = 20;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
-                        confirm.set(false);
+                        if (((Humano) k).getEquip() != null) {
+                            if (((Humano) k).getEquip().getAcao() > 0) {
+
+                            }
+                        }
                     }
                 }
             });
-        } else {
-            zombies.forEach(k -> {
-                if (xO == k.getX() && yO == k.getY()) {
+        } else if (currentTeamId == 20) {
+            criaturas.forEach(k -> {
+                if (k instanceof Zombie && xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
                         equipamentos.remove(getElementId(xD, yD));
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        k.setEquipDestruidos();
+                        k.setContarEquip();
                         currentTeamId = 0;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
@@ -161,7 +228,10 @@ public class TWDGameManager {
     }
 
     public boolean gameIsOver() {
-        return nrTurnos >= 12;
+        if (nrTurnos >= 12) {
+            return true;
+        }
+        return false;
     }
 
     public List<String> getAuthors() {
@@ -177,12 +247,7 @@ public class TWDGameManager {
 
     public int getElementId(int x, int y) {
         AtomicInteger id = new AtomicInteger();
-        humanos.forEach(k -> {
-            if (x == k.getX() && y == k.getY()) {
-                id.set(k.getId());
-            }
-        });
-        zombies.forEach(k -> {
+        criaturas.forEach(k -> {
             if (x == k.getX() && y == k.getY()) {
                 id.set(k.getId());
             }
@@ -195,36 +260,101 @@ public class TWDGameManager {
         return id.intValue();
     }
 
-    public List<String> getSurvivors() {
-        List<String> sobreviventes = new ArrayList<>();
-        sobreviventes.add("Nr. de turnos terminados:");
-        sobreviventes.add(String.valueOf(nrTurnos));
-        sobreviventes.add("\n");
-        sobreviventes.add("OS VIVOS");
-        humanos.forEach(k -> sobreviventes.add(k.getId() + " " + k.getNome()));
-        sobreviventes.add("\n");
-        sobreviventes.add("OS OUTROS");
-        zombies.forEach(k -> sobreviventes.add(k.getId() + " " + k.getNome()));
-        return sobreviventes;
+    public List<String> getGameResults() {
+        List<String> resultados = new ArrayList<>();
+        resultados.add("Nr. de turnos terminados:");
+        resultados.add(String.valueOf(nrTurnos));
+        resultados.add("\n");
+        resultados.add("Ainda pelo bairro:");
+        resultados.add("\n");
+        resultados.add("OS VIVOS");
+        criaturas.forEach(k -> {
+                    if (k.getiDTipo() > 4) {
+                        resultados.add(k.getId() + " " + k.getNome());
+                    }
+                });
+        resultados.add("\n");
+        resultados.add("OS OUTROS");
+        criaturas.forEach(k -> {
+            if (k.getiDTipo() < 5) {
+                resultados.add(k.getId() + " (antigamente conhecido como " + k.getNome() + ")");
+            }
+        });
+        resultados.add("\n");
+        resultados.add("Num safe heaven:");
+        resultados.add("\n");
+        resultados.add("OS VIVOS");
+        safeHeavenHumanos.forEach(k -> resultados.add(k.getId() + " " + k.getNome() + ")"));
+        resultados.add("\n");
+        resultados.add("Envenenados / Destruidos");
+        resultados.add("\n");
+        resultados.add("OS VIVOS");
+        foraDeJogo.forEach(k -> {
+            if (k.getiDTipo() > 4) {
+                resultados.add(k.getId() + " " + k.getNome() + ")");
+            }
+        });
+        resultados.add("\n");
+        resultados.add("OS OUTROS");
+        foraDeJogo.forEach(k -> {
+            if (k.getiDTipo() < 5) {
+                resultados.add(k.getId() + " (antigamente conhecido como " + k.getNome() + ")");
+            }
+        });
+        return resultados;
     }
-
 
     public boolean isDay() {
         return (nrTurnos/2) % 2 == 0;
     }
 
-
-    public boolean hasEquipment(int creatureId, int equipmentTypeId) {
-        AtomicBoolean confirma = new AtomicBoolean();
-        confirma.set(false);
-        humanos.forEach(k -> {
-            if (k.getId() == creatureId && k.getEquip() != null) {
-                if (k.getEquip().getTipo() == equipmentTypeId) {
-                    confirma.set(true);
-                }
+    public int getEquipmentId(int creatureId) {
+        AtomicInteger iD = new AtomicInteger();
+        criaturas.forEach(k -> {
+            if (k instanceof Humano && k.getId() == creatureId && ((Humano) k).getEquip() != null) {
+                iD.set(((Humano) k).getEquip().getId());
             }
         });
-        return confirma.get();
+        return iD.get();
     }
+
+    public List<Integer> getIdsInSafeHaven() {
+        List<Integer> iDs = new ArrayList<>();
+        safeHeavenHumanos.forEach(k -> iDs.add(k.getId()));
+        return iDs;
+    }
+
+    public boolean isDoorToSafeHaven(int x, int y) {
+        AtomicBoolean isDoor = new AtomicBoolean();
+        isDoor.set(false);
+        safeHeavens.forEach(k -> {
+            if (k.getX() == x && k.getY() == y) {
+                isDoor.set(true);
+            }
+        });
+        return isDoor.get();
+    }
+
+    public int getEquipmentTypeId(int equipmentId) {
+        return equipamentos.get(equipmentId).getTipo();
+    }
+
+    public String getEquipmentInfo(int equipmentId) {
+        return "";
+    }
+
+    public boolean saveGame(File fich) {
+        return true;
+    }
+
+    public boolean loadGame(File fich) {
+        return true;
+    }
+
+    public String[] popCultureExtravaganza() {
+        return new String[]{};
+    }
+
+
 
 }
