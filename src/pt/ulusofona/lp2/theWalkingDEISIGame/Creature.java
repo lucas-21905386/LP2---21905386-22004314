@@ -3,6 +3,7 @@ package pt.ulusofona.lp2.theWalkingDEISIGame;
 public abstract class Creature {
     private int iD, iDTipo, x, y, contarEquip;
     private String nome, nomeEquipa;
+    private boolean dead;
 
     Creature (int iD, int iDTipo, int x, int y, String nome) {
         this.iD = iD;
@@ -59,6 +60,9 @@ public abstract class Creature {
         if (iDTipo > 4 && ((Humano) this).getSafeHeaven()) {
             return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
                         " " + "@" + " " + "A salvo";
+        } else if (dead) {
+            return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
+                    " " + "@" + " " + "RIP";
         } else {
             return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
                     " " + "@" + " " + "(" + x + ", " + y + ")";
@@ -117,5 +121,11 @@ public abstract class Creature {
         this.nomeEquipa = nomeEquipa;
     }
 
+    public boolean isDead() {
+        return dead;
+    }
 
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 }

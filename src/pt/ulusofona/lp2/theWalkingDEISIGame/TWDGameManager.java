@@ -168,6 +168,11 @@ public class TWDGameManager {
             return confirm.get();
         }
         confirm.set(false);
+        criaturas.forEach(k -> {
+            if (k instanceof Humano && ((Humano) k).getEnvenenado()) {
+                ((Humano) k).setTurnosEnvenenado();
+            }
+        });
         if (currentTeamId == 10) {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
@@ -201,6 +206,16 @@ public class TWDGameManager {
                                         equipamentos.get(getElementId(xD, yD)).getY()));
                             }
                         } else {
+                            if (equipamentos.get(getElementId(xD, yD)).getTipo() == 8 && equipamentos.get(getElementId(xD, yD)).getUsosDisponiveis() > 0) {
+                                equipamentos.get(getElementId(xD, yD)).setUsosDisponiveis();
+                                ((Humano) k).setEnvenenado(true);
+                            } else if (equipamentos.get(getElementId(xD, yD)).getTipo() == 9 && !((Humano) k).getEnvenenado()) {
+                                confirm.set(false);
+                                return;
+                            } else if (equipamentos.get(getElementId(xD, yD)).getTipo() == 9 && ((Humano) k).getEnvenenado()) {
+                                ((Humano) k).setEnvenenado(false);
+                                ((Humano) k).resetTurnosEnvenenado();
+                            }
                             ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
                                     equipamentos.get(getElementId(xD, yD)).getTipo(),
                                     equipamentos.get(getElementId(xD, yD)).getX(),
@@ -350,6 +365,11 @@ public class TWDGameManager {
                 }
             });
         }
+        criaturas.forEach(k -> {
+            if (k instanceof Humano && ((Humano) k).getEnvenenado() && ((Humano) k).getTurnosEnvenenado() > 2) {
+                k.setDead(true);
+            }
+        });
         return confirm.get();
     }
 
@@ -466,9 +486,11 @@ public class TWDGameManager {
             return equipamentos.get(equipmentId).getTipo();
         }
         for (Creature k : criaturas) {
-            if (((Humano) k).getEquip() != null) {
-                if (((Humano) k).getEquip().getId() == equipmentId) {
-                    return ((Humano) k).getEquip().getTipo();
+            if (k instanceof Humano) {
+                if (((Humano) k).getEquip() != null) {
+                    if (((Humano) k).getEquip().getId() == equipmentId) {
+                        return ((Humano) k).getEquip().getTipo();
+                    }
                 }
             }
         }
@@ -482,6 +504,20 @@ public class TWDGameManager {
                         equipamentos.get(equipmentId).getUsosDisponiveis();
             } else {
                 return equipamentos.get(equipmentId).nomeById();
+            }
+        }
+        for (Creature k : criaturas) {
+            if (k instanceof Humano) {
+                if (((Humano) k).getEquip() != null) {
+                    if (((Humano) k).getEquip().getId() == equipmentId) {
+                        if (equipamentos.get(equipmentId).getUsosDisponiveis() < 4) {
+                            return equipamentos.get(equipmentId).nomeById() + " | " +
+                                    equipamentos.get(equipmentId).getUsosDisponiveis();
+                        } else {
+                            return equipamentos.get(equipmentId).nomeById();
+                        }
+                    }
+                }
             }
         }
         return "";
