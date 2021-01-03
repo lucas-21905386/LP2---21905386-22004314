@@ -57,7 +57,7 @@ public abstract class Creature {
     }
 
     public String toString(){
-        if (iDTipo > 4 && ((Humano) this).getSafeHeaven()) {
+        if (iDTipo > 4 && this instanceof Humano && ((Humano) this).getSafeHeaven()) {
             return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
                         " " + "@" + " " + "A salvo";
         } else if (dead) {

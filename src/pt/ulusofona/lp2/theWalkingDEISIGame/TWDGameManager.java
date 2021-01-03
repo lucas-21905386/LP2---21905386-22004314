@@ -107,11 +107,23 @@ public class TWDGameManager {
         return true;
     }
 
+    boolean isBishopMoveBlocked(int srcX,int srcY,int destX,int destY) {
+        // assume we have already done the tests above
+        int dirX = destX>srcX ? 1 : -1;
+        int dirY = destY>srcY ? 1 : -1;
+        for (int i=1;i<Math.abs(destX-srcX)-1;++i) {
+            if (getElementId(srcX+i*dirX,srcY+i*dirY) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
         AtomicReference<Creature> temp = new AtomicReference<>();
         confirm.set(true);
-        if (!sobreposicao(xO, yO, xD, yD)) {
+        if (!isBishopMoveBlocked(xO, yO, xD, yD)) {
             return false;
         }
         criaturas.forEach(k -> {
@@ -515,7 +527,7 @@ public class TWDGameManager {
         return isDoor.get();
     }
 
-    public int getEquipmentTypeId(int equipmentId) {
+    public int getEquipmentTypeId(int equipmentId)  {
         if (equipamentos.get(equipmentId) != null) {
             return equipamentos.get(equipmentId).getTipo();
         }
