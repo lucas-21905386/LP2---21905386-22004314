@@ -1,7 +1,7 @@
 package pt.ulusofona.lp2.theWalkingDEISIGame;
 
 public class Equipamentos {
-    private int id, tipo, x, y, acao, usosDisponiveis;
+    private int id, tipo, x, y, acao, usosDisponiveis, usado;
 
     Equipamentos (int id, int tipo, int x, int y){
         this.id = id;
@@ -21,8 +21,6 @@ public class Equipamentos {
     public void createUsosDisponiveis() {
         switch (this.tipo) {
             case 0:
-                this.usosDisponiveis = 2;
-            break;
             case 8:
             case 9:
                 this.usosDisponiveis = 1;
@@ -113,5 +111,17 @@ public class Equipamentos {
 
     public void setUsosDisponiveis() {
         this.usosDisponiveis--;
+    }
+
+    public void incrementUsosDisponiveis() {
+        this.usosDisponiveis++;
+    }
+
+    public void setUsado() {
+        this.usado++;
+    }
+
+    public int getUsado() {
+        return usado;
     }
 }

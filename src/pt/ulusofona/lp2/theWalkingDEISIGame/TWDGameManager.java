@@ -172,6 +172,7 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
                     if(isDoorToSafeHaven(xD, yD)) {
+                        ((Humano) k).setSafeHeaven(true);
                         safeHeavenHumanos.add(k);
                         k.setX(grid[0]);
                         k.setY(grid[1]);
@@ -185,15 +186,10 @@ public class TWDGameManager {
                                     new Equipamentos(((Humano) k).getEquip().getId(),
                                             ((Humano) k).getEquip().getTipo(), xO, yO));
                         }
-                        if (k.getiDTipo() == 7) {
-                            ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
-                                    equipamentos.get(getElementId(xD, yD)).getTipo(),
-                                    equipamentos.get(getElementId(xD, yD)).getX(),
-                                    equipamentos.get(getElementId(xD, yD)).getY()));
-                        } else {
-                            if (equipamentos.get(getElementId(xD, yD)).getUsosDisponiveis() > 1 &&
-                                    equipamentos.get(getElementId(xD, yD)).getTipo() == 0) {
-                                equipamentos.get(getElementId(xD, yD)).setUsosDisponiveis();
+                        if (k.getiDTipo() == 7 && equipamentos.get(getElementId(xD, yD)).getTipo() == 0) {
+                            if (equipamentos.get(getElementId(xD, yD)).getUsado() == 0) {
+                                equipamentos.get(getElementId(xD, yD)).setUsado();
+                                equipamentos.get(getElementId(xD, yD)).incrementUsosDisponiveis();
                                 ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
                                         equipamentos.get(getElementId(xD, yD)).getTipo(),
                                         equipamentos.get(getElementId(xD, yD)).getX(),
@@ -204,6 +200,11 @@ public class TWDGameManager {
                                         equipamentos.get(getElementId(xD, yD)).getX(),
                                         equipamentos.get(getElementId(xD, yD)).getY()));
                             }
+                        } else {
+                            ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                    equipamentos.get(getElementId(xD, yD)).getTipo(),
+                                    equipamentos.get(getElementId(xD, yD)).getX(),
+                                    equipamentos.get(getElementId(xD, yD)).getY()));
                         }
                         k.setContarEquip();
                         equipamentos.remove(getElementId(xD, yD));
@@ -464,7 +465,14 @@ public class TWDGameManager {
         if (equipamentos.get(equipmentId) != null) {
             return equipamentos.get(equipmentId).getTipo();
         }
-        return 0;
+        for (Creature k : criaturas) {
+            if (((Humano) k).getEquip() != null) {
+                if (((Humano) k).getEquip().getId() == equipmentId) {
+                    return ((Humano) k).getEquip().getTipo();
+                }
+            }
+        }
+        return 99;
     }
 
     public String getEquipmentInfo(int equipmentId) {
