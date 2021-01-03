@@ -59,9 +59,9 @@ public class TWDGameManager {
                     }
                     break;
                     case 4: {
-                            equipamentos.put(Integer.parseInt(linhaInfo[0]),
-                                    new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
-                                            Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
+                        equipamentos.put(Integer.parseInt(linhaInfo[0]),
+                                new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
                     }
                     break;
                     case 5: {
@@ -103,10 +103,17 @@ public class TWDGameManager {
         return criaturas;
     }
 
+    public boolean sobreposicao(int xO, int yO, int xD, int yD) {
+        return true;
+    }
+
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
         AtomicReference<Creature> temp = new AtomicReference<>();
         confirm.set(true);
+        if (!sobreposicao(xO, yO, xD, yD)) {
+            return false;
+        }
         criaturas.forEach(k -> {
             if (xO == k.getX() && yO == k.getY()) {
                 switch (k.getiDTipo()) {
@@ -258,7 +265,6 @@ public class TWDGameManager {
                                                 if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                     if (v.getiDTipo() == 0) {
                                                         foraDeJogo.add(v);
-                                                        temp.set(v);
                                                         currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
@@ -278,7 +284,6 @@ public class TWDGameManager {
                                                         if (((Humano) k).getEquip().getUsosDisponiveis() != 0) {
                                                             ((Humano) k).getEquip().setUsosDisponiveis();
                                                             foraDeJogo.add(v);
-                                                            temp.set(v);
                                                             currentTeamId = 20;
                                                             confirm.set(true);
                                                             return;
@@ -296,7 +301,6 @@ public class TWDGameManager {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         ((Humano) k).getEquip().setUsosDisponiveis();
                                                         foraDeJogo.add(v);
-                                                        temp.set(v);
                                                         currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
@@ -306,7 +310,6 @@ public class TWDGameManager {
                                                 criaturas.forEach(v -> {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         foraDeJogo.add(v);
-                                                        temp.set(v);
                                                         currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
@@ -323,7 +326,6 @@ public class TWDGameManager {
                                         criaturas.forEach(v -> {
                                             if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                 foraDeJogo.add(v);
-                                                temp.set(v);
                                                 currentTeamId = 20;
                                                 confirm.set(true);
                                                 return;
@@ -346,7 +348,12 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Zombie && xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
-                        equipamentos.remove(getElementId(xD, yD));
+                        if (k.getiDTipo() == 4 && equipamentos.get(getElementId(xD, yD)).getTipo() == 5) {
+                            confirm.set(false);
+                            return;
+                        } else {
+                            equipamentos.remove(getElementId(xD, yD));
+                        }
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
@@ -360,6 +367,28 @@ public class TWDGameManager {
                         currentTeamId = 10;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
+                        criaturas.forEach(v -> {
+                            if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                confirm.set(false);
+                                return;
+                            }
+                        });
+                        criaturas.forEach(v -> {
+                            if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() != null) {
+                                if (((Humano) v).getEquip().getTipo() == 5) {
+                                    confirm.set(true);
+                                    return;
+                                }
+                            } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
+                                temp.set(v);
+                                return;
+                            }
+                        });
+                        if (temp.get() != null) {
+                            criaturas.remove(temp.get());
+                            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo(), temp.get().getNome(),
+                                    temp.get().getX(), temp.get().getY()));
+                        }
                         confirm.set(false);
                     }
                 }
@@ -415,10 +444,10 @@ public class TWDGameManager {
         resultados.add("\n");
         resultados.add("OS VIVOS");
         criaturas.forEach(k -> {
-                    if (k.getiDTipo() > 4) {
-                        resultados.add(k.getId() + " " + k.getNome());
-                    }
-                });
+            if (k.getiDTipo() > 4) {
+                resultados.add(k.getId() + " " + k.getNome());
+            }
+        });
         resultados.add("\n");
         resultados.add("OS OUTROS");
         criaturas.forEach(k -> {
@@ -552,7 +581,5 @@ public class TWDGameManager {
     public String[] popCultureExtravaganza() {
         return new String[]{};
     }
-
-
 
 }
