@@ -380,19 +380,24 @@ public class TWDGameManager {
                                     return;
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
-                                temp.set(v);
-                                return;
+                                if (v.getiDTipo() == 9) {
+                                    confirm.set(false);
+                                    return;
+                                } else {
+                                    temp.set(v);
+                                    return;
+                                }
                             }
                         });
-                        if (temp.get() != null) {
-                            criaturas.remove(temp.get());
-                            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo(), temp.get().getNome(),
-                                    temp.get().getX(), temp.get().getY()));
-                        }
                         confirm.set(false);
                     }
                 }
             });
+        }
+        if (temp.get() != null) {
+            criaturas.remove(temp.get());
+            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo(), temp.get().getNome(),
+                    temp.get().getX(), temp.get().getY()));
         }
         criaturas.forEach(k -> {
             if (k instanceof Humano && ((Humano) k).getEnvenenado() && ((Humano) k).getTurnosEnvenenado() > 2) {
@@ -539,11 +544,11 @@ public class TWDGameManager {
             if (k instanceof Humano) {
                 if (((Humano) k).getEquip() != null) {
                     if (((Humano) k).getEquip().getId() == equipmentId) {
-                        if (equipamentos.get(equipmentId).getUsosDisponiveis() < 4) {
-                            return equipamentos.get(equipmentId).nomeById() + " | " +
-                                    equipamentos.get(equipmentId).getUsosDisponiveis();
+                        if (((Humano) k).getEquip().getUsosDisponiveis() < 4) {
+                            return ((Humano) k).getEquip().nomeById() + " | " +
+                                    ((Humano) k).getEquip().getUsosDisponiveis();
                         } else {
-                            return equipamentos.get(equipmentId).nomeById();
+                            return ((Humano) k).getEquip().nomeById();
                         }
                     }
                 }
