@@ -172,8 +172,9 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
                     if(isDoorToSafeHaven(xD, yD)) {
+                        k.setX(xD);
+                        k.setY(yD);
                         safeHeavenHumanos.add(k);
-                        temp.set(k);
                         confirm.set(true);
                         return;
                     }
@@ -297,13 +298,13 @@ public class TWDGameManager {
                         k.setY(yD);
                         nrTurnos++;
                         k.setContarEquip();
-                        currentTeamId = 0;
+                        currentTeamId = 10;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        currentTeamId = 0;
+                        currentTeamId = 10;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
                         confirm.set(false);
@@ -311,7 +312,6 @@ public class TWDGameManager {
                 }
             });
         }
-        criaturas.remove(temp.get());
         return confirm.get();
     }
 
