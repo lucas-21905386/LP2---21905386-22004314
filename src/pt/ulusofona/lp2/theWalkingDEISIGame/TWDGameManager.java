@@ -172,9 +172,10 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
                     if(isDoorToSafeHaven(xD, yD)) {
-                        k.setX(xD);
-                        k.setY(yD);
                         safeHeavenHumanos.add(k);
+                        k.setX(grid[0]);
+                        k.setY(grid[1]);
+                        currentTeamId = 20;
                         confirm.set(true);
                         return;
                     }
@@ -226,6 +227,7 @@ public class TWDGameManager {
                                                     if (v.getiDTipo() == 0) {
                                                         foraDeJogo.add(v);
                                                         temp.set(v);
+                                                        currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
                                                     } else {
@@ -245,6 +247,7 @@ public class TWDGameManager {
                                                             ((Humano) k).getEquip().setUsosDisponiveis();
                                                             foraDeJogo.add(v);
                                                             temp.set(v);
+                                                            currentTeamId = 20;
                                                             confirm.set(true);
                                                             return;
                                                         } else {
@@ -262,6 +265,7 @@ public class TWDGameManager {
                                                         ((Humano) k).getEquip().setUsosDisponiveis();
                                                         foraDeJogo.add(v);
                                                         temp.set(v);
+                                                        currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -271,6 +275,7 @@ public class TWDGameManager {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         foraDeJogo.add(v);
                                                         temp.set(v);
+                                                        currentTeamId = 20;
                                                         confirm.set(true);
                                                         return;
                                                     }
