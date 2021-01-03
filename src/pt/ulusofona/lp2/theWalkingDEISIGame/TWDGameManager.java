@@ -241,11 +241,16 @@ public class TWDGameManager {
                                                         confirm.set(false);
                                                         return;
                                                     } else {
-                                                        ((Humano) k).getEquip().setUsosDisponiveis();
-                                                        foraDeJogo.add(v);
-                                                        temp.set(v);
-                                                        confirm.set(true);
-                                                        return;
+                                                        if (((Humano) k).getEquip().getUsosDisponiveis() != 0) {
+                                                            ((Humano) k).getEquip().setUsosDisponiveis();
+                                                            foraDeJogo.add(v);
+                                                            temp.set(v);
+                                                            confirm.set(true);
+                                                            return;
+                                                        } else {
+                                                            confirm.set(false);
+                                                            return;
+                                                        }
                                                     }
                                                 }
                                             });
@@ -257,6 +262,7 @@ public class TWDGameManager {
                                                         ((Humano) k).getEquip().setUsosDisponiveis();
                                                         foraDeJogo.add(v);
                                                         temp.set(v);
+                                                        confirm.set(true);
                                                         return;
                                                     }
                                                 });
@@ -265,9 +271,13 @@ public class TWDGameManager {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         foraDeJogo.add(v);
                                                         temp.set(v);
+                                                        confirm.set(true);
                                                         return;
                                                     }
                                                 });
+                                            } else {
+                                                confirm.set(false);
+                                                return;
                                             }
                                         }
                                     }
@@ -459,7 +469,13 @@ public class TWDGameManager {
     }
 
     public boolean loadGame(File fich) {
-        return true;
+        try {
+            Scanner ficheiro = new Scanner(fich);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String[] popCultureExtravaganza() {
