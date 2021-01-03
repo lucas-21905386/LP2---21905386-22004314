@@ -5,6 +5,7 @@ import java.util.*;
 import java.lang.String;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TWDGameManager {
     HashMap<Integer, Equipamentos> equipamentos = new HashMap<>();
@@ -104,6 +105,7 @@ public class TWDGameManager {
 
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
+        AtomicReference<Creature> temp = new AtomicReference<>();
         confirm.set(true);
         criaturas.forEach(k -> {
             if (xO == k.getX() && yO == k.getY()) {
@@ -168,6 +170,10 @@ public class TWDGameManager {
         if (currentTeamId == 10) {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
+                    if(isDoorToSafeHaven(xD, yD)) {
+                        safeHeavenHumanos.add(k);
+                        temp.set(k);
+                    }
                     if (getElementId(xD, yD) < 0) {
                         if (((Humano) k).getEquip() != null) {
                             equipamentos.put(((Humano) k).getEquip().getId(),
@@ -202,6 +208,9 @@ public class TWDGameManager {
                 }
             });
         } else if (currentTeamId == 20) {
+            if(isDoorToSafeHaven(xD, yD)) {
+                return false;
+            }
             criaturas.forEach(k -> {
                 if (k instanceof Zombie && xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
@@ -223,6 +232,9 @@ public class TWDGameManager {
                     }
                 }
             });
+        }
+        if (temp != null) {
+            criaturas.remove(temp.get());
         }
         return confirm.get();
     }
@@ -343,6 +355,14 @@ public class TWDGameManager {
     }
 
     public String getEquipmentInfo(int equipmentId) {
+        if (equipamentos.get(equipmentId) != null) {
+            if (equipamentos.get(equipmentId).getUsosDisponiveis() < 4) {
+                return equipamentos.get(equipmentId).nomeById() + " | " +
+                        equipamentos.get(equipmentId).getUsosDisponiveis();
+            } else {
+                return equipamentos.get(equipmentId).nomeById();
+            }
+        }
         return "";
     }
 

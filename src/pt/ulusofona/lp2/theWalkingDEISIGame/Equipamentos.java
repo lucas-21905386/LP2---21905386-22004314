@@ -15,6 +15,30 @@ public class Equipamentos {
         } else {
             acao = 0;
         }
+        createUsosDisponiveis();
+    }
+
+    public void createUsosDisponiveis() {
+        switch (this.tipo) {
+            case 0:
+            case 8:
+            case 9:
+                this.usosDisponiveis = 1;
+            break;
+            case 1:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 10:
+                this.usosDisponiveis = 99;
+            break;
+            case 2:
+            case 7:
+                this.usosDisponiveis = 3;
+            break;
+            default: this.usosDisponiveis = 0;
+        }
     }
 
     public String getDefOf(int acao) {
@@ -24,6 +48,23 @@ public class Equipamentos {
             return "Ofensivo";
         } else {
             return "Defensivo/Ofensivo";
+        }
+    }
+
+    public String nomeById() {
+        switch (this.tipo) {
+            case 0: return "Escudo de Madeira";
+            case 1: return "Espada Hattori Hanzo";
+            case 2: return "Pistola Walther PPK";
+            case 3: return "Escudo Táctico";
+            case 4: return "Revista Maria";
+            case 5: return "Cabeça de Alho";
+            case 6: return "Estaca de Madeira";
+            case 7: return "Garrafa de Lixívia (1 litro)";
+            case 8: return "Veneno";
+            case 9: return "Antídoto";
+            case 10: return "Beskar Helmet";
+            default: return "Desconhecido";
         }
     }
 
@@ -65,7 +106,7 @@ public class Equipamentos {
     }
 
     public int getUsosDisponiveis() {
-        return usosDisponiveis;
+        return this.usosDisponiveis;
     }
 
     public void setUsosDisponiveis() {
