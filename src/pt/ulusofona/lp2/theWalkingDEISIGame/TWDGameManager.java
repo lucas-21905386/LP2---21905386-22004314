@@ -167,12 +167,15 @@ public class TWDGameManager {
         if (!confirm.get()) {
             return confirm.get();
         }
+        confirm.set(false);
         if (currentTeamId == 10) {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
                     if(isDoorToSafeHaven(xD, yD)) {
                         safeHeavenHumanos.add(k);
                         temp.set(k);
+                        confirm.set(true);
+                        return;
                     }
                     if (getElementId(xD, yD) < 0) {
                         if (((Humano) k).getEquip() != null) {
@@ -193,15 +196,90 @@ public class TWDGameManager {
                         currentTeamId = 20;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
+                        if (k.getiDTipo() == 8 && ((Humano) k).getEquip() != null) {
+                            equipamentos.put(((Humano) k).getEquip().getId(),
+                                    new Equipamentos(((Humano) k).getEquip().getId(),
+                                            ((Humano) k).getEquip().getTipo(), xO, yO));
+                            ((Humano) k).setEquip(null);
+                        }
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
+                        semMortes++;
                         currentTeamId = 20;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
+                        criaturas.forEach(v -> {
+                            if (v.getId() == getElementId(xD, yD) && v instanceof Humano) {
+                                confirm.set(false);
+                                return;
+                            }
+                        });
                         if (((Humano) k).getEquip() != null) {
                             if (((Humano) k).getEquip().getAcao() > 0) {
+                                switch (k.getiDTipo()) {
+                                    case 5: {
+                                        if (((Humano) k).getEquip().getTipo() == 1) {
+                                            criaturas.forEach(v -> {
+                                                if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                                    if (v.getiDTipo() == 0) {
+                                                        foraDeJogo.add(v);
+                                                        temp.set(v);
+                                                        confirm.set(true);
+                                                        return;
+                                                    } else {
+                                                        confirm.set(false);
+                                                        return;
+                                                    }
+                                                }
+                                            });
+                                        } else if (((Humano) k).getEquip().getTipo() == 2) {
+                                            criaturas.forEach(v -> {
+                                                if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                                    if (v.getiDTipo() == 4) {
+                                                        confirm.set(false);
+                                                        return;
+                                                    } else {
+                                                        ((Humano) k).getEquip().setUsosDisponiveis();
+                                                        foraDeJogo.add(v);
+                                                        temp.set(v);
+                                                        confirm.set(true);
+                                                        return;
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            if (((Humano) k).getEquip().getUsosDisponiveis() < 4 &&
+                                                    ((Humano) k).getEquip().getUsosDisponiveis() > 0) {
+                                                criaturas.forEach(v -> {
+                                                    if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                                        ((Humano) k).getEquip().setUsosDisponiveis();
+                                                        foraDeJogo.add(v);
+                                                        temp.set(v);
+                                                        return;
+                                                    }
+                                                });
+                                            } else if (((Humano) k).getEquip().getUsosDisponiveis() > 4){
+                                                criaturas.forEach(v -> {
+                                                    if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                                        foraDeJogo.add(v);
+                                                        temp.set(v);
+                                                        return;
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                    break;
+                                    case 0: {
 
+                                    }
+                                    break;
+                                    default: {
+
+                                    }
+                                    //fim switch
+                                }
                             }
                         }
                     }
@@ -233,9 +311,7 @@ public class TWDGameManager {
                 }
             });
         }
-        if (temp != null) {
-            criaturas.remove(temp.get());
-        }
+        criaturas.remove(temp.get());
         return confirm.get();
     }
 
