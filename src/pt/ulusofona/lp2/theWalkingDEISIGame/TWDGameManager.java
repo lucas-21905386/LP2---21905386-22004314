@@ -185,10 +185,26 @@ public class TWDGameManager {
                                     new Equipamentos(((Humano) k).getEquip().getId(),
                                             ((Humano) k).getEquip().getTipo(), xO, yO));
                         }
-                        ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
-                                equipamentos.get(getElementId(xD, yD)).getTipo(),
-                                equipamentos.get(getElementId(xD, yD)).getX(),
-                                equipamentos.get(getElementId(xD, yD)).getY()));
+                        if (k.getiDTipo() == 7) {
+                            ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                    equipamentos.get(getElementId(xD, yD)).getTipo(),
+                                    equipamentos.get(getElementId(xD, yD)).getX(),
+                                    equipamentos.get(getElementId(xD, yD)).getY()));
+                        } else {
+                            if (equipamentos.get(getElementId(xD, yD)).getUsosDisponiveis() > 1 &&
+                                    equipamentos.get(getElementId(xD, yD)).getTipo() == 0) {
+                                equipamentos.get(getElementId(xD, yD)).setUsosDisponiveis();
+                                ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                        equipamentos.get(getElementId(xD, yD)).getTipo(),
+                                        equipamentos.get(getElementId(xD, yD)).getX(),
+                                        equipamentos.get(getElementId(xD, yD)).getY()));
+                            } else {
+                                ((Humano) k).setEquip(new Equipamentos(equipamentos.get(getElementId(xD, yD)).getId(),
+                                        equipamentos.get(getElementId(xD, yD)).getTipo(),
+                                        equipamentos.get(getElementId(xD, yD)).getX(),
+                                        equipamentos.get(getElementId(xD, yD)).getY()));
+                            }
+                        }
                         k.setContarEquip();
                         equipamentos.remove(getElementId(xD, yD));
                         k.setX(xD);
@@ -287,16 +303,22 @@ public class TWDGameManager {
                                         }
                                     }
                                     break;
-                                    case 0: {
-
-                                    }
-                                    break;
                                     default: {
-
+                                        criaturas.forEach(v -> {
+                                            if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
+                                                foraDeJogo.add(v);
+                                                temp.set(v);
+                                                currentTeamId = 20;
+                                                confirm.set(true);
+                                                return;
+                                            }
+                                        });
                                     }
-                                    //fim switch
                                 }
                             }
+                        } else {
+                            confirm.set(false);
+                            return;
                         }
                     }
                 }

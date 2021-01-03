@@ -21,6 +21,8 @@ public class Equipamentos {
     public void createUsosDisponiveis() {
         switch (this.tipo) {
             case 0:
+                this.usosDisponiveis = 2;
+            break;
             case 8:
             case 9:
                 this.usosDisponiveis = 1;
