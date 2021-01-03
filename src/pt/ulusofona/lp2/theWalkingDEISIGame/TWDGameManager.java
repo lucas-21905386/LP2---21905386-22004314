@@ -336,7 +336,10 @@ public class TWDGameManager {
     }
 
     public int getEquipmentTypeId(int equipmentId) {
-        return equipamentos.get(equipmentId).getTipo();
+        if (equipamentos.get(equipmentId) != null) {
+            return equipamentos.get(equipmentId).getTipo();
+        }
+        return 0;
     }
 
     public String getEquipmentInfo(int equipmentId) {
