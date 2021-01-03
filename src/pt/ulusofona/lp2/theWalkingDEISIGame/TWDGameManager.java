@@ -7,21 +7,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TWDGameManager {
-    static List<Humano> humanos = new ArrayList<>();
-    static List<Zombie> zombies = new ArrayList<>();
-    static HashMap<Integer, Equipamentos> equipamentos = new HashMap<>();
-    static int[] grid;
-    static int first, totalCriaturas, totalEquipamentos, nrTurnos = 0, currentTeamId;
+    HashMap<Integer, Equipamentos> equipamentos = new HashMap<>();
+    List<Creature> criaturas = new ArrayList<>();
+    List<SafeHeaven> safeHeavens = new ArrayList<>();
+    List<Creature> safeHeavenHumanos = new ArrayList<>();
+    List<Creature> foraDeJogo = new ArrayList<>();
+    int[] grid;
+    int first, totalCriaturas, totalEquipamentos, totalSafeHeavens, nrTurnos = 0, semMortes = 0, currentTeamId;
 
     public TWDGameManager () {
     }
 
     void reset () {
-        humanos.clear();
-        zombies.clear();
+        criaturas.clear();
+        safeHeavens.clear();
+        safeHeavenHumanos.clear();
+        foraDeJogo.clear();
         equipamentos.clear();
         nrTurnos = 0;
     }
+
 
     public boolean startGame(File ficheiroInicial) {
         reset();
@@ -42,31 +47,34 @@ public class TWDGameManager {
                             currentTeamId = Integer.parseInt(linhaInfo[0]);
                         } else if (count == 3) {
                             totalCriaturas = Integer.parseInt(linhaInfo[0]);
-                        } else {
+                        } else if (count == count + 1 + totalCriaturas) {
                             totalEquipamentos = Integer.parseInt(linhaInfo[0]);
+                        } else {
+                            totalSafeHeavens = Integer.parseInt(linhaInfo[0]);
                         }
+                    }
+                    break;
+                    case 2: {
+                        safeHeavens.add(new SafeHeaven(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1])));
                     }
                     break;
                     case 4: {
-                            equipamentos.put(Integer.parseInt(linhaInfo[0]),
-                                    new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
-                                            Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
+                        equipamentos.put(Integer.parseInt(linhaInfo[0]),
+                                new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
                     }
                     break;
                     case 5: {
-                        if (Integer.parseInt(linhaInfo[1]) == 0) {
-                            List<Integer> ids = new ArrayList<>();
-                            zombies.forEach(k -> ids.add(k.getId()));
+                        List<Integer> ids = new ArrayList<>();
+                        criaturas.forEach(k -> ids.add(k.getId()));
+                        if (Integer.parseInt(linhaInfo[1]) > 4) {
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
-                                zombies.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
                             }
-                        }
-                        if (Integer.parseInt(linhaInfo[1]) == 1) {
-                            List<Integer> ids = new ArrayList<>();
-                            humanos.forEach(k -> ids.add(k.getId()));
+                        } else if (Integer.parseInt(linhaInfo[1]) < 5) {
                             if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
-                                humanos.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                criaturas.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                         linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
                             }
                         }
@@ -177,12 +185,7 @@ public class TWDGameManager {
 
     public int getElementId(int x, int y) {
         AtomicInteger id = new AtomicInteger();
-        humanos.forEach(k -> {
-            if (x == k.getX() && y == k.getY()) {
-                id.set(k.getId());
-            }
-        });
-        zombies.forEach(k -> {
+        criaturas.forEach(k -> {
             if (x == k.getX() && y == k.getY()) {
                 id.set(k.getId());
             }
