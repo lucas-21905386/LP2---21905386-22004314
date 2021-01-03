@@ -27,7 +27,6 @@ public class TWDGameManager {
         nrTurnos = 0;
     }
 
-
     public boolean startGame(File ficheiroInicial) {
         reset();
         int count = 1;
@@ -59,9 +58,9 @@ public class TWDGameManager {
                     }
                     break;
                     case 4: {
-                        equipamentos.put(Integer.parseInt(linhaInfo[0]),
-                                new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
-                                        Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
+                            equipamentos.put(Integer.parseInt(linhaInfo[0]),
+                                    new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                            Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
                     }
                     break;
                     case 5: {
