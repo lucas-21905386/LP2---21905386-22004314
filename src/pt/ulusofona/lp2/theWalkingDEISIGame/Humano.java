@@ -3,7 +3,7 @@ package pt.ulusofona.lp2.theWalkingDEISIGame;
 public class Humano extends Creature {
     private Equipamentos equip;
     private boolean safeHeaven, envenenado;
-    private int turnosEnvenenado;
+    private int turnosEnvenenado = -1;
 
     Humano (int iD, int iDTipo, String nome, int x, int y) {
         super(iD, iDTipo, x, y, nome);
@@ -38,7 +38,7 @@ public class Humano extends Creature {
     }
 
     public void resetTurnosEnvenenado() {
-        this.turnosEnvenenado = 0;
+        this.turnosEnvenenado = -1;
     }
 
     public int getTurnosEnvenenado() {

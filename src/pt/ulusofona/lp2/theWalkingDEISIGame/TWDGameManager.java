@@ -187,11 +187,7 @@ public class TWDGameManager {
             return confirm.get();
         }
         confirm.set(false);
-        criaturas.forEach(k -> {
-            if (k instanceof Humano && ((Humano) k).getEnvenenado()) {
-                ((Humano) k).setTurnosEnvenenado();
-            }
-        });
+
         if (currentTeamId == 10) {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && xO == k.getX() && yO == k.getY()) {
@@ -387,9 +383,26 @@ public class TWDGameManager {
                         });
                         criaturas.forEach(v -> {
                             if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() != null) {
-                                if (((Humano) v).getEquip().getTipo() == 5) {
+                                if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() == 4) {
                                     confirm.set(true);
                                     return;
+                                } else if (((Humano) v).getEquip().getAcao() > 0) {
+                                    if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
+                                        k.setDead(true);
+                                        ((Humano) v).getEquip().setUsosDisponiveis();
+                                    } else {
+                                        temp.set(v);
+                                        confirm.set(true);
+                                        return;
+                                    }
+                                } else if (((Humano) v).getEquip().getAcao() == 0) {
+                                    if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
+                                        ((Humano) v).getEquip().setUsosDisponiveis();
+                                    } else {
+                                        temp.set(v);
+                                        confirm.set(true);
+                                        return;
+                                    }
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
                                 if (v.getiDTipo() == 9) {
@@ -397,25 +410,33 @@ public class TWDGameManager {
                                     return;
                                 } else {
                                     temp.set(v);
+                                    confirm.set(true);
                                     return;
                                 }
                             }
                         });
-                        confirm.set(false);
                     }
                 }
             });
         }
         if (temp.get() != null) {
             criaturas.remove(temp.get());
-            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo(), temp.get().getNome(),
+            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo()-5, temp.get().getNome(),
                     temp.get().getX(), temp.get().getY()));
+
         }
         criaturas.forEach(k -> {
             if (k instanceof Humano && ((Humano) k).getEnvenenado() && ((Humano) k).getTurnosEnvenenado() > 2) {
                 k.setDead(true);
             }
         });
+        if (confirm.get()) {
+            criaturas.forEach(k -> {
+                if (k instanceof Humano && ((Humano) k).getEnvenenado()) {
+                    ((Humano) k).setTurnosEnvenenado();
+                }
+            });
+        }
         return confirm.get();
     }
 
