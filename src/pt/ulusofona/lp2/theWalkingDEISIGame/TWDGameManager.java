@@ -139,7 +139,7 @@ public class TWDGameManager {
                     break;
                     case 3:
                     case 8: {
-                        if (new VerificarMov().idoso(xO, yO, xD, yD, k.getiDTipo())) {
+                        if (new VerificarMov().idoso(xO, yO, xD, yD, k.getiDTipo(), isDay())) {
                             break;
                         } else {
                             confirm.set(false);
@@ -147,7 +147,7 @@ public class TWDGameManager {
                     }
                     break;
                     case 4: {
-                        if (new VerificarMov().vampiro(xO, yO, xD, yD)) {
+                        if (new VerificarMov().vampiro(xO, yO, xD, yD, isDay())) {
                             break;
                         } else {
                             confirm.set(false);
@@ -443,6 +443,18 @@ public class TWDGameManager {
     }
 
     public boolean saveGame(File fich) {
+        try {
+            fich.createNewFile();
+            FileWriter salvar = new FileWriter(fich.getName());
+            salvar.write(grid[0] + " : " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas);
+            for (Creature k : criaturas) {
+                salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
+                        + k.getX() + " : " + k.getY() + "\n");
+            }
+            salvar.close();
+        } catch (IOException e) {
+            return false;
+        }
         return true;
     }
 

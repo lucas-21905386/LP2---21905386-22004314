@@ -56,8 +56,13 @@ public abstract class Creature {
     }
 
     public String toString(){
-        return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
-                " " + "@" + " " + "(" + x + ", " + y + ")";
+        if (iDTipo > 4 && ((Humano) this).getSafeHeaven()) {
+            return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
+                        " " + "@" + " " + "A salvo";
+        } else {
+            return iD + " | " + tipoById(iDTipo) + " | " + nomeEquipa + " | " + nome + " " + contarEquip +
+                    " " + "@" + " " + "(" + x + ", " + y + ")";
+        }
     }
 
     public void setiD(int iD) {

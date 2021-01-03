@@ -25,9 +25,9 @@ public class VerificarMov {
         }
     }
 
-    public boolean idoso(int xO, int yO, int xD, int yD, int tipo) {
+    public boolean idoso(int xO, int yO, int xD, int yD, int tipo, boolean dia) {
         if (tipo == 8) {
-            if (xD != xO && yD != yO || xD - xO > 1 || xD - xO < -1 || yD - yO > 1 || yD - yO < -1 || !new TWDGameManager().isDay()) {
+            if (xD != xO && yD != yO || xD - xO > 1 || xD - xO < -1 || yD - yO > 1 || yD - yO < -1 || !dia) {
                 return false;
             } else {
                 return true;
@@ -45,8 +45,8 @@ public class VerificarMov {
         }
     }
 
-    public boolean vampiro(int xO, int yO, int xD, int yD) {
-        if (xD - xO > 2 || xD - xO < -2 || yD - yO > 2 || yD - yO < -2 || new TWDGameManager().isDay()) {
+    public boolean vampiro(int xO, int yO, int xD, int yD, boolean dia) {
+        if (xD - xO > 2 || xD - xO < -2 || yD - yO > 2 || yD - yO < -2 || dia) {
             return false;
         } else {
             return true;

@@ -2,6 +2,7 @@ package pt.ulusofona.lp2.theWalkingDEISIGame;
 
 public class Humano extends Creature {
     private Equipamentos equip;
+    private boolean safeHeaven;
 
     Humano (int iD, int iDTipo, String nome, int x, int y) {
         super(iD, iDTipo, x, y, nome);
@@ -13,5 +14,13 @@ public class Humano extends Creature {
 
     public void setEquip(Equipamentos equip) {
         this.equip = equip;
+    }
+
+    public void setSafeHeaven(boolean safeHeaven) {
+        this.safeHeaven = safeHeaven;
+    }
+
+    public boolean getSafeHeaven() {
+        return safeHeaven;
     }
 }
