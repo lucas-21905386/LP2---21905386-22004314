@@ -230,7 +230,6 @@ public class TWDGameManager {
                         k.setY(grid[1]);
                         currentTeamId = 20;
                         nrTurnos++;
-                        semMortes++;
                         confirm.set(true);
                         return;
                     }
@@ -275,7 +274,6 @@ public class TWDGameManager {
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        semMortes++;
                         currentTeamId = 20;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
@@ -288,7 +286,6 @@ public class TWDGameManager {
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
-                        semMortes++;
                         currentTeamId = 20;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
@@ -340,7 +337,6 @@ public class TWDGameManager {
                                                             k.setY(yD);
                                                             currentTeamId = 20;
                                                             nrTurnos++;
-                                                            semMortes = 0;
                                                             confirm.set(true);
                                                             return;
                                                         } else {
@@ -364,7 +360,6 @@ public class TWDGameManager {
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
-                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -380,7 +375,6 @@ public class TWDGameManager {
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
-                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -403,7 +397,6 @@ public class TWDGameManager {
                                                 k.setY(yD);
                                                 currentTeamId = 20;
                                                 nrTurnos++;
-                                                semMortes = 0;
                                                 confirm.set(true);
                                                 return;
                                             }
@@ -433,19 +426,15 @@ public class TWDGameManager {
                         }
                         k.setX(xD);
                         k.setY(yD);
-                        nrTurnos++;
                         k.setContarEquip();
                         currentTeamId = 10;
                         nrTurnos++;
-                        semMortes++;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
                         k.setX(xD);
                         k.setY(yD);
-                        nrTurnos++;
                         currentTeamId = 10;
                         nrTurnos++;
-                        semMortes++;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
                         criaturas.forEach(v -> {
@@ -460,7 +449,6 @@ public class TWDGameManager {
                                     currentTeamId = 10;
                                     confirm.set(true);
                                     nrTurnos++;
-                                    semMortes++;
                                     return;
                                 } else if (((Humano) v).getEquip().getTipo() == 8) {
                                     confirm.set(false);
@@ -478,7 +466,6 @@ public class TWDGameManager {
                                             ((Humano) v).getEquip().setUsosDisponiveis();
                                             currentTeamId = 10;
                                             nrTurnos++;
-                                            semMortes = 0;
                                             confirm.set(true);
                                             return;
                                         }
@@ -503,7 +490,6 @@ public class TWDGameManager {
                                             ((Humano) v).getEquip().setUsosDisponiveis();
                                             currentTeamId = 10;
                                             nrTurnos++;
-                                            semMortes++;
                                             confirm.set(true);
                                             return;
                                         }
@@ -541,8 +527,7 @@ public class TWDGameManager {
             criaturas.remove(temp.get());
             criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo()-5, temp.get().getNome(),
                     temp.get().getX(), temp.get().getY()));
-            semMortes = 0;
-
+            semMortes++;
         }
         criaturas.forEach(k -> {
             if (k instanceof Humano && ((Humano) k).getEnvenenado() && ((Humano) k).getTurnosEnvenenado() > 2) {
@@ -564,7 +549,15 @@ public class TWDGameManager {
     }
 
     public boolean gameIsOver() {
-        if (nrTurnos >= 12) {
+        int vivos = 0;
+        for (Creature criatura : criaturas) {
+            if (criatura.getX() < grid[0] && criatura.getY() < grid[1]) {
+                vivos++;
+            }
+        }
+        if (semMortes >= 12) {
+            return true;
+        } else if (vivos == 0) {
             return true;
         }
         return false;
