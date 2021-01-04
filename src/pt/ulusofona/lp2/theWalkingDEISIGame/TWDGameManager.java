@@ -671,7 +671,22 @@ public class TWDGameManager {
     }
 
     public String[] popCultureExtravaganza() {
-        return new String[]{};
+        String[] pop = new String[14];
+        pop[0] = "Resident Evil";
+        pop[1] = "Evil Dead";
+        pop[2] = "I Am Legend";
+        pop[3] = "I Am Legend";
+        pop[4] = "Dragon Ball";
+        pop[5] = "World War Z";
+        pop[6] = "Mandalorians";
+        pop[7] = "1972";
+        pop[8] = "Kill Bill";
+        pop[9] = "1978";
+        pop[10] = "Bond. James Bond.";
+        pop[11] = "Lost";
+        pop[12] = "Chocho";
+        pop[13] = "Farrokh Bulsara";
+        return pop;
     }
 
 }
