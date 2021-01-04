@@ -582,7 +582,7 @@ public class TWDGameManager {
         int vivos = 0;
         for (Creature k : criaturas) {
             if (k instanceof Humano) {
-                if (!((Humano) k).getSafeHeaven() || !k.isDead()) {
+                if (!((Humano) k).getSafeHeaven() && !k.isDead()) {
                     vivos++;
                 }
             }
