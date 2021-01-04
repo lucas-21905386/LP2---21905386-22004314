@@ -574,9 +574,11 @@ public class TWDGameManager {
 
     public boolean gameIsOver() {
         int vivos = 0;
-        for (Creature criatura : criaturas) {
-            if (criatura.getX() < grid[0] && criatura.getY() < grid[1]) {
-                vivos++;
+        for (Creature k : criaturas) {
+            if (k instanceof Humano) {
+                if (!((Humano) k).getSafeHeaven() || !k.isDead()) {
+                    vivos++;
+                }
             }
         }
         if (semMortes >= 12) {
@@ -732,15 +734,46 @@ public class TWDGameManager {
 
     public boolean saveGame(File fich) {
         try {
-            File ficheiroCriado = fich;
-            ficheiroCriado.createNewFile();
-            FileWriter salvar = new FileWriter(ficheiroCriado.getName());
-            salvar.write(grid[0] + " : " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas);
-            for (Creature k : criaturas) {
-                salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
-                        + k.getX() + " : " + k.getY() + "\n");
+            if (fich != null && fich.createNewFile()) {
+                FileWriter salvar = new FileWriter(fich.getName());
+                salvar.write(grid[0] + " : " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas + "\n");
+                for (Creature k : criaturas) {
+                    if (k != null) {
+                        salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
+                                + k.getX() + " : " + k.getY() + "\n");
+                    }
+                }
+                salvar.write(equipamentos.size() + "\n");
+                for (Map.Entry<Integer, Equipamentos> e : equipamentos.entrySet()) {
+                    if (e.getValue() != null) {
+                        salvar.write(e.getValue().getId() + " : " + e.getValue().getTipo() + " : "
+                                + e.getValue().getX() + " : " + e.getValue().getY() + "\n");
+                    }
+                }
+                salvar.write(totalSafeHeavens + "\n");
+                for (SafeHeaven sh : safeHeavens) {
+                    if (sh != null) {
+                        salvar.write(sh.getX() + " : " + sh.getY() + "\n");
+                    }
+                }
+                salvar.write(nrTurnos + "\n" + semMortes + "\n" + safeHeavenHumanos.size() + "\n");
+                for (Creature k : safeHeavenHumanos) {
+                    if (k != null) {
+                        salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
+                                + k.getX() + " : " + k.getY() + "\n");
+                    }
+                }
+                salvar.write(foraDeJogo.size() + "\n");
+                for (Creature k : foraDeJogo) {
+                    if (k != null) {
+                        salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
+                                + k.getX() + " : " + k.getY() + "\n");
+                    }
+                }
+                salvar.close();
+            } else {
+                return false;
             }
-            salvar.close();
         } catch (IOException e) {
             return false;
         }
