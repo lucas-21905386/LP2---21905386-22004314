@@ -496,6 +496,9 @@ public class TWDGameManager {
                                             confirm.set(false);
                                             return;
                                         } else {
+                                            if (((Humano) v).getEquip().getTipo() == 5) {
+                                                temp.set(v);
+                                            }
                                             ((Humano) v).getEquip().setUsosDisponiveis();
                                             currentTeamId = 10;
                                             nrTurnos++;
