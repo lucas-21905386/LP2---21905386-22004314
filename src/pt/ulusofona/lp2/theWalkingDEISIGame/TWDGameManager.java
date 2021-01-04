@@ -496,7 +496,8 @@ public class TWDGameManager {
                                             confirm.set(false);
                                             return;
                                         } else {
-                                            if (((Humano) v).getEquip().getTipo() == 5) {
+                                            if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() != 4 ||
+                                                    ((Humano) v).getEquip().getTipo() == 4 && k.getiDTipo() != 3) {
                                                 temp.set(v);
                                             }
                                             ((Humano) v).getEquip().setUsosDisponiveis();
