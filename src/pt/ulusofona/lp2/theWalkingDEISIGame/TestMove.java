@@ -14,7 +14,7 @@ public class TestMove {
 
         boolean atual = teste.move(3, 3, 2, 3);
 
-        boolean esperado = true;
+        boolean esperado = false;
         assertEquals("Expected result is " + esperado + "but was " + atual, esperado, atual);
     }
 
