@@ -625,37 +625,37 @@ public class TWDGameManager {
         List<String> resultados = new ArrayList<>();
         resultados.add("Nr. de turnos terminados:");
         resultados.add(String.valueOf(nrTurnos));
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("Ainda pelo bairro:");
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("OS VIVOS");
         criaturas.forEach(k -> {
             if (k.getiDTipo() > 4) {
                 resultados.add(k.getId() + " " + k.getNome());
             }
         });
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("OS OUTROS");
         criaturas.forEach(k -> {
             if (k.getiDTipo() < 5) {
                 resultados.add(k.getId() + " (antigamente conhecido como " + k.getNome() + ")");
             }
         });
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("Num safe heaven:");
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("OS VIVOS");
         safeHeavenHumanos.forEach(k -> resultados.add(k.getId() + " " + k.getNome() + ")"));
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("Envenenados / Destruidos");
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("OS VIVOS");
         foraDeJogo.forEach(k -> {
             if (k.getiDTipo() > 4) {
                 resultados.add(k.getId() + " " + k.getNome() + ")");
             }
         });
-        resultados.add("\n");
+        resultados.add(" \n");
         resultados.add("OS OUTROS");
         foraDeJogo.forEach(k -> {
             if (k.getiDTipo() < 5) {
