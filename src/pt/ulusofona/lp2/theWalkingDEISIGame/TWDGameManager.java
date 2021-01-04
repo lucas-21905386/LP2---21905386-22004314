@@ -418,6 +418,10 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Zombie && xO == k.getX() && yO == k.getY()) {
                     if (getElementId(xD, yD) < 0) {
+                        if (equipamentos.get(getElementId(xD, yD)).getTipo() == 8) {
+                            confirm.set(false);
+                            return;
+                        }
                         if (k.getiDTipo() == 4 && equipamentos.get(getElementId(xD, yD)).getTipo() == 5) {
                             confirm.set(false);
                             return;
@@ -445,6 +449,10 @@ public class TWDGameManager {
                         });
                         criaturas.forEach(v -> {
                             if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() != null) {
+                                if (((Humano) v).getEnvenenado()) {
+                                    confirm.set(false);
+                                    return;
+                                }
                                 if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() == 4) {
                                     currentTeamId = 10;
                                     confirm.set(true);
@@ -507,6 +515,10 @@ public class TWDGameManager {
                                     }
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
+                                if (((Humano) v).getEnvenenado()) {
+                                    confirm.set(false);
+                                    return;
+                                }
                                 if (v.getiDTipo() == 9) {
                                     confirm.set(false);
                                     return;
@@ -750,6 +762,5 @@ public class TWDGameManager {
         pop[13] = "Farrokh Bulsara";
         return pop;
     }
-
 
 }
