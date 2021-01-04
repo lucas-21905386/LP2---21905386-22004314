@@ -416,7 +416,11 @@ public class TWDGameManager {
                         criaturas.forEach(v -> {
                             if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() != null) {
                                 if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() == 4) {
+                                    currentTeamId = 10;
                                     confirm.set(true);
+                                    return;
+                                } else if (((Humano) v).getEquip().getTipo() == 8) {
+                                    confirm.set(false);
                                     return;
                                 } else if (((Humano) v).getEquip().getAcao() > 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
@@ -425,23 +429,30 @@ public class TWDGameManager {
                                         k.setX(grid[0]);
                                         k.setY(grid[1]);
                                         ((Humano) v).getEquip().setUsosDisponiveis();
+                                        currentTeamId = 10;
                                         confirm.set(true);
                                         return;
                                     } else {
                                         temp.set(v);
+                                        currentTeamId = 10;
                                         confirm.set(true);
                                         return;
                                     }
                                 } else if (((Humano) v).getEquip().getAcao() == 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
                                         ((Humano) v).getEquip().setUsosDisponiveis();
+                                        currentTeamId = 10;
                                         confirm.set(true);
                                         return;
                                     } else {
                                         temp.set(v);
+                                        currentTeamId = 10;
                                         confirm.set(true);
                                         return;
                                     }
+                                } else if (v.getiDTipo() == 9) {
+                                    confirm.set(false);
+                                    return;
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
                                 if (v.getiDTipo() == 9) {
@@ -449,6 +460,7 @@ public class TWDGameManager {
                                     return;
                                 } else {
                                     temp.set(v);
+                                    currentTeamId = 10;
                                     confirm.set(true);
                                     return;
                                 }
