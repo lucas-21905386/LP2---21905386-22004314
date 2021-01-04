@@ -117,6 +117,10 @@ public class Equipamentos {
         this.usosDisponiveis++;
     }
 
+    public void editUsosDisponiveis(int usosDisponiveis) {
+        this.usosDisponiveis = usosDisponiveis;
+    }
+
     public void setUsado() {
         this.usado++;
     }

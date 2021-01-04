@@ -105,6 +105,10 @@ public abstract class Creature {
         this.contarEquip++;
     }
 
+    public void editContarEquip(int contarEquip) {
+        this.contarEquip = contarEquip;
+    }
+
     public String getNome() {
         return nome;
     }
