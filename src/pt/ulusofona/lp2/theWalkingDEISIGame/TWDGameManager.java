@@ -108,16 +108,26 @@ public class TWDGameManager {
         int distanceY = yO - yD;
         int absX = Math.abs(distanceX);
         int absY = Math.abs(distanceY);
-        int i = xO;
-        int j = yO;
-
         if (absX == 1 && absY == 1 || absX == 0 && absY == 1 || absX == 1 && absY == 0) {
             return true;
         }
+        int i = xO;
+        int j = yO;
+        if (distanceX < 0) {
+            i++;
+        } else if (distanceX > 0) {
+            i--;
+        }
+        if (distanceY < 0) {
+            j++;
+        } else if (distanceY > 0) {
+            j--;
+        }
+
 
         if (xO != xD && yO != yD) {
             while (i != xD && j != yD) {
-                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0 || isDoorToSafeHaven(i, j)) {
                     return false;
                 }
                 if (distanceX < 0) {
@@ -133,7 +143,7 @@ public class TWDGameManager {
             }
         } else if (xO == xD && yO != yD) {
             while (j != yD) {
-                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0 || isDoorToSafeHaven(i, j)) {
                     return false;
                 }
                 if (distanceY < 0) {
@@ -144,7 +154,7 @@ public class TWDGameManager {
             }
         } else if (xO != xD && yO == yD) {
             while (i != xD) {
-                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0 || isDoorToSafeHaven(i, j)) {
                     return false;
                 }
                 if (distanceX < 0) {
@@ -269,7 +279,9 @@ public class TWDGameManager {
                             } else if (equipamentos.get(getElementId(xD, yD)).getTipo() == 9 && !((Humano) k).getEnvenenado()) {
                                 confirm.set(false);
                                 return;
-                            } else if (equipamentos.get(getElementId(xD, yD)).getTipo() == 9 && ((Humano) k).getEnvenenado()) {
+                            } else if (equipamentos.get(getElementId(xD, yD)).getTipo() == 9 && ((Humano) k).getEnvenenado()
+                                    && equipamentos.get(getElementId(xD, yD)).getUsosDisponiveis() > 0) {
+                                equipamentos.get(getElementId(xD, yD)).setUsosDisponiveis();
                                 ((Humano) k).setEnvenenado(false);
                                 ((Humano) k).resetTurnosEnvenenado();
                             }
@@ -285,6 +297,7 @@ public class TWDGameManager {
                         nrTurnos++;
                         currentTeamId = 20;
                         confirm.set(true);
+                        return;
                     } else if (getElementId(xD, yD) == 0) {
                         if (k.getiDTipo() == 8 && ((Humano) k).getEquip() != null) {
                             equipamentos.put(((Humano) k).getEquip().getId(),
