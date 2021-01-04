@@ -104,28 +104,58 @@ public class TWDGameManager {
     }
 
     public boolean sobreposicao(int xO, int yO, int xD, int yD) {
-        return true;
-    }
+        int distanceX = xO - xD;
+        int distanceY = yO - yD;
+        int i = xO;
+        int j = yO;
 
-    boolean isBishopMoveBlocked(int srcX,int srcY,int destX,int destY) {
-        // assume we have already done the tests above
-        int dirX = destX>srcX ? 1 : -1;
-        int dirY = destY>srcY ? 1 : -1;
-        for (int i=1;i<Math.abs(destX-srcX)-1;++i) {
-            if (getElementId(srcX+i*dirX,srcY+i*dirY) > 0) {
-                return false;
+        if (xO != xD && yO != yD) {
+            while (i != xD && j != yD) {
+                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                    return false;
+                }
+                if (distanceX < 0) {
+                    i++;
+                } else if (distanceX > 0) {
+                    i--;
+                }
+                if (distanceY < 0) {
+                    j++;
+                } else if (distanceY > 0) {
+                    j--;
+                }
+            }
+        } else if (xO == xD && yO != yD) {
+            while (j != yD) {
+                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                    return false;
+                }
+                if (distanceY < 0) {
+                    j++;
+                } else if (distanceY > 0) {
+                    j--;
+                }
+            }
+        } else if (xO != xD && yO == yD) {
+            while (i != xD) {
+                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                    return false;
+                }
+                if (distanceX < 0) {
+                    i++;
+                } else if (distanceX > 0) {
+                    i--;
+                }
             }
         }
         return true;
     }
 
-
-
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
         AtomicReference<Creature> temp = new AtomicReference<>();
         confirm.set(true);
-        if (!isBishopMoveBlocked(xO, yO, xD, yD)) {
+        if (!sobreposicao(xO, yO, xD, yD)) {
             return false;
         }
         criaturas.forEach(k -> {
