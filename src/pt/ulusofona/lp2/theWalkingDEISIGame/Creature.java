@@ -11,6 +11,7 @@ public abstract class Creature {
         this.x = x;
         this.y = y;
         this.nome = nome;
+        dead = false;
         if (iDTipo > 4) {
             setNomeEquipa("Os Vivos");
         } else {

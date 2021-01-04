@@ -7,6 +7,7 @@ public class Humano extends Creature {
 
     Humano (int iD, int iDTipo, String nome, int x, int y) {
         super(iD, iDTipo, x, y, nome);
+        safeHeaven = false;
     }
 
     public Equipamentos getEquip() {

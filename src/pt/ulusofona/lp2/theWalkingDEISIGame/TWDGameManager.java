@@ -630,14 +630,14 @@ public class TWDGameManager {
         resultados.add("");
         resultados.add("OS VIVOS");
         criaturas.forEach(k -> {
-            if (k.getiDTipo() > 4) {
+            if (k.getiDTipo() > 4 && !((Humano) k).getSafeHeaven() && !k.isDead()) {
                 resultados.add(k.getId() + " " + k.getNome());
             }
         });
         resultados.add("");
         resultados.add("OS OUTROS");
         criaturas.forEach(k -> {
-            if (k.getiDTipo() < 5) {
+            if (k.getiDTipo() < 5 && !k.isDead()) {
                 resultados.add(k.getId() + " (antigamente conhecido como " + k.getNome() + ")");
             }
         });
@@ -645,14 +645,14 @@ public class TWDGameManager {
         resultados.add("Num safe heaven:");
         resultados.add("");
         resultados.add("OS VIVOS");
-        safeHeavenHumanos.forEach(k -> resultados.add(k.getId() + " " + k.getNome() + ")"));
+        safeHeavenHumanos.forEach(k -> resultados.add(k.getId() + " " + k.getNome()));
         resultados.add("");
         resultados.add("Envenenados / Destruidos");
         resultados.add("");
         resultados.add("OS VIVOS");
         foraDeJogo.forEach(k -> {
             if (k.getiDTipo() > 4) {
-                resultados.add(k.getId() + " " + k.getNome() + ")");
+                resultados.add(k.getId() + " " + k.getNome());
             }
         });
         resultados.add("");
@@ -751,14 +751,18 @@ public class TWDGameManager {
                                         + k.getX() + " : " + k.getY() + " : " + k.getContarEquip() + " : "
                                         + ((Humano) k).getEquip().getId() + " : " + ((Humano) k).getEquip().getTipo() + " : "
                                         + ((Humano) k).getEquip().getUsosDisponiveis() + " : "
-                                        + ((Humano) k).getEquip().getX() + " : " + ((Humano) k).getEquip().getY() + "\n");
+                                        + ((Humano) k).getEquip().getX() + " : " + ((Humano) k).getEquip().getY() + " : "
+                                        + ((Humano) k).getSafeHeaven() +  " : "
+                                        + k.isDead()  + "\n");
                             } else {
                                 salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
-                                        + k.getX() + " : " + k.getY() + " : " + k.getContarEquip() + "\n");
+                                        + k.getX() + " : " + k.getY() + " : " + k.getContarEquip() +  " : "
+                                        + ((Humano) k).getSafeHeaven() + " : " + k.isDead() + "\n");
                             }
                         } else {
                             salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
-                                    + k.getX() + " : " + k.getY() + " : " + k.getContarEquip() + "\n");
+                                    + k.getX() + " : " + k.getY() + " : " + k.getContarEquip() +  " : "
+                                    + k.isDead() + "\n");
                         }
                     }
                 }
@@ -859,27 +863,35 @@ public class TWDGameManager {
                         }
                     }
                     break;
-                    case 6: {
+                    case 7: {
                         if (Integer.parseInt(linhaInfo[1]) < 5) {
                             criaturas.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
                                     linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
                             for (Creature k : criaturas) {
                                 if (k.getId() == Integer.parseInt(linhaInfo[0])) {
                                     k.editContarEquip(Integer.parseInt(linhaInfo[5]));
-                                }
-                            }
-                        } else if (Integer.parseInt(linhaInfo[1]) > 4) {
-                            criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
-                                    linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
-                            for (Creature k : criaturas) {
-                                if (k.getId() == Integer.parseInt(linhaInfo[0])) {
-                                    k.editContarEquip(Integer.parseInt(linhaInfo[5]));
+                                    k.setDead(Boolean.parseBoolean(linhaInfo[6]));
                                 }
                             }
                         }
                     }
                     break;
-                    case 11: {
+                    case 8: {
+                        if (Integer.parseInt(linhaInfo[1]) > 4) {
+                            criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                    linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            for (Creature k : criaturas) {
+                                if (k.getId() == Integer.parseInt(linhaInfo[0])) {
+                                    k.editContarEquip(Integer.parseInt(linhaInfo[5]));
+                                    if (k instanceof Humano) {
+                                        ((Humano) k).setSafeHeaven(Boolean.parseBoolean(linhaInfo[6]));
+                                        k.setDead(Boolean.parseBoolean(linhaInfo[7]));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    case 13: {
                         List<Integer> ids = new ArrayList<>();
                         criaturas.forEach(k -> ids.add(k.getId()));
                         if (Integer.parseInt(linhaInfo[1]) > 4) {
@@ -894,12 +906,15 @@ public class TWDGameManager {
                                                     Integer.parseInt(linhaInfo[7]), Integer.parseInt(linhaInfo[9]),
                                                     Integer.parseInt(linhaInfo[10])));
                                             ((Humano) k).getEquip().editUsosDisponiveis(Integer.parseInt(linhaInfo[8]));
+                                            ((Humano) k).setSafeHeaven(Boolean.parseBoolean(linhaInfo[11]));
+                                            k.setDead(Boolean.parseBoolean(linhaInfo[12]));
                                         }
                                     }
                                 }
                             }
                         }
                     }
+                    break;
                     default:
                 }
             }
