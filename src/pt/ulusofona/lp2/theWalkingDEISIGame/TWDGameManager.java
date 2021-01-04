@@ -106,12 +106,18 @@ public class TWDGameManager {
     public boolean sobreposicao(int xO, int yO, int xD, int yD) {
         int distanceX = xO - xD;
         int distanceY = yO - yD;
+        int absX = Math.abs(distanceX);
+        int absY = Math.abs(distanceY);
         int i = xO;
         int j = yO;
 
+        if (absX == 1 && absY == 1 || absX == 0 && absY == 1 || absX == 1 && absY == 0) {
+            return true;
+        }
+
         if (xO != xD && yO != yD) {
             while (i != xD && j != yD) {
-                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
                     return false;
                 }
                 if (distanceX < 0) {
@@ -127,7 +133,7 @@ public class TWDGameManager {
             }
         } else if (xO == xD && yO != yD) {
             while (j != yD) {
-                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
                     return false;
                 }
                 if (distanceY < 0) {
@@ -138,7 +144,7 @@ public class TWDGameManager {
             }
         } else if (xO != xD && yO == yD) {
             while (i != xD) {
-                if (getElementId(i, j) > 0 && getElementId(i, j) < 0) {
+                if (getElementId(i, j) > 0 || getElementId(i, j) < 0) {
                     return false;
                 }
                 if (distanceX < 0) {
