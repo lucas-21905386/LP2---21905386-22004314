@@ -152,6 +152,9 @@ public class TWDGameManager {
     }
 
     public boolean move(int xO, int yO, int xD, int yD) {
+        if (xD < 0 || xD > grid[0] || yD < 0 || yD > grid[0] ) {
+            return false;
+        }
         AtomicBoolean confirm = new AtomicBoolean();
         AtomicReference<Creature> temp = new AtomicReference<>();
         confirm.set(true);
@@ -311,7 +314,6 @@ public class TWDGameManager {
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
-                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     } else {
@@ -458,9 +460,6 @@ public class TWDGameManager {
                                     confirm.set(true);
                                     nrTurnos++;
                                     return;
-                                } else if (((Humano) v).getEquip().getTipo() == 8) {
-                                    confirm.set(false);
-                                    return;
                                 } else if (((Humano) v).getEquip().getAcao() > 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
                                         if (v.getiDTipo() == 9) {
@@ -539,6 +538,8 @@ public class TWDGameManager {
             criaturas.remove(temp.get());
             criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo()-5, temp.get().getNome(),
                     temp.get().getX(), temp.get().getY()));
+            semMortes = 0;
+        } else {
             semMortes++;
         }
         criaturas.forEach(k -> {
@@ -547,7 +548,6 @@ public class TWDGameManager {
                 foraDeJogo.add(k);
                 k.setX(grid[0]);
                 k.setY(grid[1]);
-                semMortes = 0;
             }
         });
         if (confirm.get()) {
