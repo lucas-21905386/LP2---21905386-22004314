@@ -566,6 +566,12 @@ public class TWDGameManager {
             criaturas.forEach(k -> {
                 if (k instanceof Humano && ((Humano) k).getEnvenenado()) {
                     ((Humano) k).setTurnosEnvenenado();
+                    if (((Humano) k).getTurnosEnvenenado() > 2) {
+                        k.setDead(true);
+                        foraDeJogo.add(k);
+                        k.setX(grid[0]);
+                        k.setY(grid[1]);
+                    }
                 }
             });
         }
