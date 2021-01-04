@@ -229,6 +229,8 @@ public class TWDGameManager {
                         k.setX(grid[0]);
                         k.setY(grid[1]);
                         currentTeamId = 20;
+                        nrTurnos++;
+                        semMortes++;
                         confirm.set(true);
                         return;
                     }
@@ -305,7 +307,12 @@ public class TWDGameManager {
                                                 if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                     if (v.getiDTipo() == 0) {
                                                         foraDeJogo.add(v);
+                                                        v.setX(grid[0]);
+                                                        v.setY(grid[1]);
+                                                        k.setX(xD);
+                                                        k.setY(yD);
                                                         currentTeamId = 20;
+                                                        nrTurnos++;
                                                         confirm.set(true);
                                                         return;
                                                     } else {
@@ -324,7 +331,12 @@ public class TWDGameManager {
                                                         if (((Humano) k).getEquip().getUsosDisponiveis() != 0) {
                                                             ((Humano) k).getEquip().setUsosDisponiveis();
                                                             foraDeJogo.add(v);
+                                                            v.setX(grid[0]);
+                                                            v.setY(grid[1]);
+                                                            k.setX(xD);
+                                                            k.setY(yD);
                                                             currentTeamId = 20;
+                                                            nrTurnos++;
                                                             confirm.set(true);
                                                             return;
                                                         } else {
@@ -341,7 +353,12 @@ public class TWDGameManager {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         ((Humano) k).getEquip().setUsosDisponiveis();
                                                         foraDeJogo.add(v);
+                                                        v.setX(grid[0]);
+                                                        v.setY(grid[1]);
+                                                        k.setX(xD);
+                                                        k.setY(yD);
                                                         currentTeamId = 20;
+                                                        nrTurnos++;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -350,7 +367,12 @@ public class TWDGameManager {
                                                 criaturas.forEach(v -> {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         foraDeJogo.add(v);
+                                                        v.setX(grid[0]);
+                                                        v.setY(grid[1]);
+                                                        k.setX(xD);
+                                                        k.setY(yD);
                                                         currentTeamId = 20;
+                                                        nrTurnos++;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -366,7 +388,12 @@ public class TWDGameManager {
                                         criaturas.forEach(v -> {
                                             if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                 foraDeJogo.add(v);
+                                                v.setX(grid[0]);
+                                                v.setY(grid[1]);
+                                                k.setX(xD);
+                                                k.setY(yD);
                                                 currentTeamId = 20;
+                                                nrTurnos++;
                                                 confirm.set(true);
                                                 return;
                                             }
@@ -399,12 +426,16 @@ public class TWDGameManager {
                         nrTurnos++;
                         k.setContarEquip();
                         currentTeamId = 10;
+                        nrTurnos++;
+                        semMortes++;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) == 0) {
                         k.setX(xD);
                         k.setY(yD);
                         nrTurnos++;
                         currentTeamId = 10;
+                        nrTurnos++;
+                        semMortes++;
                         confirm.set(true);
                     } else if (getElementId(xD, yD) > 0) {
                         criaturas.forEach(v -> {
@@ -418,41 +449,65 @@ public class TWDGameManager {
                                 if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() == 4) {
                                     currentTeamId = 10;
                                     confirm.set(true);
+                                    nrTurnos++;
+                                    semMortes++;
                                     return;
                                 } else if (((Humano) v).getEquip().getTipo() == 8) {
                                     confirm.set(false);
                                     return;
                                 } else if (((Humano) v).getEquip().getAcao() > 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
-                                        k.setDead(true);
-                                        foraDeJogo.add(k);
-                                        k.setX(grid[0]);
-                                        k.setY(grid[1]);
-                                        ((Humano) v).getEquip().setUsosDisponiveis();
-                                        currentTeamId = 10;
-                                        confirm.set(true);
-                                        return;
+                                        if (v.getiDTipo() == 9) {
+                                            confirm.set(false);
+                                            return;
+                                        } else {
+                                            k.setDead(true);
+                                            foraDeJogo.add(k);
+                                            k.setX(grid[0]);
+                                            k.setY(grid[1]);
+                                            ((Humano) v).getEquip().setUsosDisponiveis();
+                                            currentTeamId = 10;
+                                            nrTurnos++;
+                                            confirm.set(true);
+                                            return;
+                                        }
                                     } else {
-                                        temp.set(v);
-                                        currentTeamId = 10;
-                                        confirm.set(true);
-                                        return;
+                                        if (v.getiDTipo() == 9) {
+                                            confirm.set(false);
+                                            return;
+                                        } else {
+                                            temp.set(v);
+                                            currentTeamId = 10;
+                                            nrTurnos++;
+                                            confirm.set(true);
+                                            return;
+                                        }
                                     }
                                 } else if (((Humano) v).getEquip().getAcao() == 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
-                                        ((Humano) v).getEquip().setUsosDisponiveis();
-                                        currentTeamId = 10;
-                                        confirm.set(true);
-                                        return;
+                                        if (v.getiDTipo() == 9) {
+                                            confirm.set(false);
+                                            return;
+                                        } else {
+                                            ((Humano) v).getEquip().setUsosDisponiveis();
+                                            currentTeamId = 10;
+                                            nrTurnos++;
+                                            semMortes++;
+                                            confirm.set(true);
+                                            return;
+                                        }
                                     } else {
-                                        temp.set(v);
-                                        currentTeamId = 10;
-                                        confirm.set(true);
-                                        return;
+                                        if (v.getiDTipo() == 9) {
+                                            confirm.set(false);
+                                            return;
+                                        } else {
+                                            temp.set(v);
+                                            currentTeamId = 10;
+                                            nrTurnos++;
+                                            confirm.set(true);
+                                            return;
+                                        }
                                     }
-                                } else if (v.getiDTipo() == 9) {
-                                    confirm.set(false);
-                                    return;
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
                                 if (v.getiDTipo() == 9) {
@@ -461,6 +516,7 @@ public class TWDGameManager {
                                 } else {
                                     temp.set(v);
                                     currentTeamId = 10;
+                                    nrTurnos++;
                                     confirm.set(true);
                                     return;
                                 }
