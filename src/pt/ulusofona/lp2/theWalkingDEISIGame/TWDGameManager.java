@@ -642,7 +642,7 @@ public class TWDGameManager {
             }
         });
         resultados.add("");
-        resultados.add("Num safe heaven:");
+        resultados.add("Num safe haven:");
         resultados.add("");
         resultados.add("OS VIVOS");
         safeHeavenHumanos.forEach(k -> resultados.add(k.getId() + " " + k.getNome()));
