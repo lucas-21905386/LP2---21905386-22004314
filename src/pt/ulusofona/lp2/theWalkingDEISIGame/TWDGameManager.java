@@ -736,7 +736,7 @@ public class TWDGameManager {
         try {
             if (fich != null && fich.createNewFile()) {
                 FileWriter salvar = new FileWriter(fich.getName());
-                salvar.write(grid[0] + " : " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas + "\n");
+                salvar.write(grid[0] + " " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas + "\n");
                 for (Creature k : criaturas) {
                     if (k != null) {
                         salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
@@ -781,13 +781,87 @@ public class TWDGameManager {
     }
 
     public boolean loadGame(File fich) {
+        if (fich == null) {
+            return false;
+        }
+        reset();
+        int count = 1;
         try {
             Scanner ficheiro = new Scanner(fich);
-            return true;
+            String linha = ficheiro.nextLine();
+            String[] linhaInfo = linha.split(" ");
+            grid = new int[]{Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1])};
+            while (ficheiro.hasNextLine()) {
+                linha = ficheiro.nextLine();
+                count++;
+                linhaInfo = linha.split(" : ");
+                switch (linhaInfo.length) {
+                    case 1: {
+                        if (count == 2) {
+                            first = Integer.parseInt(linhaInfo[0]);
+                            currentTeamId = Integer.parseInt(linhaInfo[0]);
+                        } else if (count == 3) {
+                            totalCriaturas = Integer.parseInt(linhaInfo[0]);
+                        } else if (4 + totalCriaturas == count) {
+                            totalEquipamentos = Integer.parseInt(linhaInfo[0]);
+                        } else if (5 + totalEquipamentos + totalCriaturas == count) {
+                            totalSafeHeavens = Integer.parseInt(linhaInfo[0]);
+                        } else if (6 + totalCriaturas + totalSafeHeavens + totalEquipamentos == count) {
+                            nrTurnos = Integer.parseInt(linhaInfo[0]);
+                        } else if (7 + totalCriaturas + totalSafeHeavens + totalEquipamentos == count) {
+                            semMortes = Integer.parseInt(linhaInfo[0]);
+                        }
+                    }
+                    break;
+                    case 2: {
+                        safeHeavens.add(new SafeHeaven(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1])));
+                    }
+                    break;
+                    case 4: {
+                        equipamentos.put(Integer.parseInt(linhaInfo[0]),
+                                new Equipamentos(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        Integer.parseInt(linhaInfo[2]), Integer.parseInt(linhaInfo[3])));
+                    }
+                    break;
+                    case 5: {
+                        if (9 + totalCriaturas + totalSafeHeavens + totalEquipamentos == count) {
+                            safeHeavenHumanos.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                    linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            count--;
+                        } else if (10 + totalCriaturas + totalSafeHeavens + totalEquipamentos +
+                                safeHeavenHumanos.size() == count) {
+                            if (Integer.parseInt(linhaInfo[1]) > 4) {
+                                criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            } else if (Integer.parseInt(linhaInfo[1]) < 5) {
+                                criaturas.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            }
+                        }
+                        List<Integer> ids = new ArrayList<>();
+                        criaturas.forEach(k -> ids.add(k.getId()));
+                        if (Integer.parseInt(linhaInfo[1]) > 4) {
+                            if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
+                                criaturas.add(new Humano(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            }
+                        } else if (Integer.parseInt(linhaInfo[1]) < 5) {
+                            if (!ids.contains(Integer.parseInt(linhaInfo[0]))) {
+                                criaturas.add(new Zombie(Integer.parseInt(linhaInfo[0]), Integer.parseInt(linhaInfo[1]),
+                                        linhaInfo[2], Integer.parseInt(linhaInfo[3]), Integer.parseInt(linhaInfo[4])));
+                            }
+                        }
+                    }
+                    break;
+                    default:
+                }
+            }
+            ficheiro.close();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+        return true;
     }
 
     public String[] popCultureExtravaganza() {
