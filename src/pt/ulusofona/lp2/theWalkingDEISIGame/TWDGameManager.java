@@ -645,7 +645,7 @@ public class TWDGameManager {
         resultados.add("Nr. de turnos terminados:");
         resultados.add(String.valueOf(nrTurnos));
         resultados.add("");
-        resultados.add("Ainda pelo bairro:");
+        resultados.add("Ainda pelo bairo:");
         resultados.add("");
         resultados.add("OS VIVOS");
         criaturas.forEach(k -> {
