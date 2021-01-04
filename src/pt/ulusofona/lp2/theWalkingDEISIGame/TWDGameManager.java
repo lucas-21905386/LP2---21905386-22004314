@@ -452,7 +452,9 @@ public class TWDGameManager {
                         criaturas.forEach(v -> {
                             if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() != null) {
                                 if (((Humano) v).getEnvenenado()) {
-                                    confirm.set(false);
+                                    confirm.set(true);
+                                    nrTurnos++;
+                                    currentTeamId = 10;
                                     return;
                                 }
                                 if (((Humano) v).getEquip().getTipo() == 5 && k.getiDTipo() == 4) {
@@ -515,7 +517,9 @@ public class TWDGameManager {
                                 }
                             } else if (v instanceof Humano && v.getId() == getElementId(xD, yD) && ((Humano) v).getEquip() == null) {
                                 if (((Humano) v).getEnvenenado()) {
-                                    confirm.set(false);
+                                    confirm.set(true);
+                                    nrTurnos++;
+                                    currentTeamId = 10;
                                     return;
                                 }
                                 if (v.getiDTipo() == 9) {
@@ -535,10 +539,14 @@ public class TWDGameManager {
             });
         }
         if (temp.get() != null) {
-            criaturas.remove(temp.get());
-            criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo()-5, temp.get().getNome(),
-                    temp.get().getX(), temp.get().getY()));
-            semMortes = 0;
+            if (temp.get().getId() != 0) {
+                criaturas.remove(temp.get());
+                criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo() - 5, temp.get().getNome(),
+                        temp.get().getX(), temp.get().getY()));
+                semMortes = 0;
+            } else {
+                semMortes++;
+            }
         } else {
             semMortes++;
         }
@@ -720,8 +728,9 @@ public class TWDGameManager {
 
     public boolean saveGame(File fich) {
         try {
-            fich.createNewFile();
-            FileWriter salvar = new FileWriter(fich.getName());
+            File ficheiroCriado = fich;
+            ficheiroCriado.createNewFile();
+            FileWriter salvar = new FileWriter(ficheiroCriado.getName());
             salvar.write(grid[0] + " : " + grid[1] + "\n" + currentTeamId + "\n" + totalCriaturas);
             for (Creature k : criaturas) {
                 salvar.write(k.getId() + " : " + k.getiDTipo() + " : " + k.getNome() + " : "
