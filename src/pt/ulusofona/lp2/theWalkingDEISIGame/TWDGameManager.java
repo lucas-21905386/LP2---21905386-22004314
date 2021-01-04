@@ -307,12 +307,14 @@ public class TWDGameManager {
                                                 if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                     if (v.getiDTipo() == 0) {
                                                         foraDeJogo.add(v);
+                                                        v.setDead(true);
                                                         v.setX(grid[0]);
                                                         v.setY(grid[1]);
                                                         k.setX(xD);
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
+                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     } else {
@@ -331,12 +333,14 @@ public class TWDGameManager {
                                                         if (((Humano) k).getEquip().getUsosDisponiveis() != 0) {
                                                             ((Humano) k).getEquip().setUsosDisponiveis();
                                                             foraDeJogo.add(v);
+                                                            v.setDead(true);
                                                             v.setX(grid[0]);
                                                             v.setY(grid[1]);
                                                             k.setX(xD);
                                                             k.setY(yD);
                                                             currentTeamId = 20;
                                                             nrTurnos++;
+                                                            semMortes = 0;
                                                             confirm.set(true);
                                                             return;
                                                         } else {
@@ -353,12 +357,14 @@ public class TWDGameManager {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         ((Humano) k).getEquip().setUsosDisponiveis();
                                                         foraDeJogo.add(v);
+                                                        v.setDead(true);
                                                         v.setX(grid[0]);
                                                         v.setY(grid[1]);
                                                         k.setX(xD);
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
+                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -367,12 +373,14 @@ public class TWDGameManager {
                                                 criaturas.forEach(v -> {
                                                     if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                         foraDeJogo.add(v);
+                                                        v.setDead(true);
                                                         v.setX(grid[0]);
                                                         v.setY(grid[1]);
                                                         k.setX(xD);
                                                         k.setY(yD);
                                                         currentTeamId = 20;
                                                         nrTurnos++;
+                                                        semMortes = 0;
                                                         confirm.set(true);
                                                         return;
                                                     }
@@ -388,12 +396,14 @@ public class TWDGameManager {
                                         criaturas.forEach(v -> {
                                             if (v.getId() == getElementId(xD, yD) && v instanceof Zombie) {
                                                 foraDeJogo.add(v);
+                                                v.setDead(true);
                                                 v.setX(grid[0]);
                                                 v.setY(grid[1]);
                                                 k.setX(xD);
                                                 k.setY(yD);
                                                 currentTeamId = 20;
                                                 nrTurnos++;
+                                                semMortes = 0;
                                                 confirm.set(true);
                                                 return;
                                             }
@@ -468,6 +478,7 @@ public class TWDGameManager {
                                             ((Humano) v).getEquip().setUsosDisponiveis();
                                             currentTeamId = 10;
                                             nrTurnos++;
+                                            semMortes = 0;
                                             confirm.set(true);
                                             return;
                                         }
@@ -530,6 +541,7 @@ public class TWDGameManager {
             criaturas.remove(temp.get());
             criaturas.add(new Zombie(temp.get().getId(), temp.get().getiDTipo()-5, temp.get().getNome(),
                     temp.get().getX(), temp.get().getY()));
+            semMortes = 0;
 
         }
         criaturas.forEach(k -> {
@@ -538,6 +550,7 @@ public class TWDGameManager {
                 foraDeJogo.add(k);
                 k.setX(grid[0]);
                 k.setY(grid[1]);
+                semMortes = 0;
             }
         });
         if (confirm.get()) {
