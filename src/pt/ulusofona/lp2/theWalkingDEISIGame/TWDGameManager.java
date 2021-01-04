@@ -119,6 +119,8 @@ public class TWDGameManager {
         return true;
     }
 
+
+
     public boolean move(int xO, int yO, int xD, int yD) {
         AtomicBoolean confirm = new AtomicBoolean();
         AtomicReference<Creature> temp = new AtomicReference<>();
@@ -389,7 +391,12 @@ public class TWDGameManager {
                                 } else if (((Humano) v).getEquip().getAcao() > 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
                                         k.setDead(true);
+                                        foraDeJogo.add(k);
+                                        k.setX(grid[0]);
+                                        k.setY(grid[1]);
                                         ((Humano) v).getEquip().setUsosDisponiveis();
+                                        confirm.set(true);
+                                        return;
                                     } else {
                                         temp.set(v);
                                         confirm.set(true);
@@ -398,6 +405,8 @@ public class TWDGameManager {
                                 } else if (((Humano) v).getEquip().getAcao() == 0) {
                                     if (((Humano) v).getEquip().getUsosDisponiveis() > 0) {
                                         ((Humano) v).getEquip().setUsosDisponiveis();
+                                        confirm.set(true);
+                                        return;
                                     } else {
                                         temp.set(v);
                                         confirm.set(true);
@@ -428,6 +437,9 @@ public class TWDGameManager {
         criaturas.forEach(k -> {
             if (k instanceof Humano && ((Humano) k).getEnvenenado() && ((Humano) k).getTurnosEnvenenado() > 2) {
                 k.setDead(true);
+                foraDeJogo.add(k);
+                k.setX(grid[0]);
+                k.setY(grid[1]);
             }
         });
         if (confirm.get()) {
