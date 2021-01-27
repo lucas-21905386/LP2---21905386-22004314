@@ -827,7 +827,7 @@ public class TWDGameManager {
         return true;
     }
 
-    public boolean loadGame(File fich) {
+    public boolean loadGame(File fich) throws InvalidTWDInitialFileException, FileNotFoundException {
         if (fich == null) {
             return false;
         }
@@ -849,6 +849,9 @@ public class TWDGameManager {
                             currentTeamId = Integer.parseInt(linhaInfo[0]);
                         } else if (count == 3) {
                             totalCriaturas = Integer.parseInt(linhaInfo[0]);
+                            if (totalCriaturas < 2) {
+                                throw new InvalidTWDInitialFileException();
+                            }
                         } else if (4 + totalCriaturas == count) {
                             totalEquipamentos = Integer.parseInt(linhaInfo[0]);
                         } else if (5 + totalEquipamentos + totalCriaturas == count) {
@@ -943,9 +946,11 @@ public class TWDGameManager {
                 }
             }
             ficheiro.close();
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
+        } catch (InvalidTWDInitialFileException inv) {
+            inv.validNrOfCreatures();
         }
         return true;
     }
