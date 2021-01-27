@@ -47,6 +47,9 @@ public class TWDGameManager {
                             currentTeamId = Integer.parseInt(linhaInfo[0]);
                         } else if (count == 3) {
                             totalCriaturas = Integer.parseInt(linhaInfo[0]);
+                            if (!new InvalidTWDInitialFileException().validNrOfCreatures()) {
+                                throw new InvalidTWDInitialFileException();
+                            }
                         } else if (count == count + 1 + totalCriaturas) {
                             totalEquipamentos = Integer.parseInt(linhaInfo[0]);
                         } else {
@@ -84,7 +87,7 @@ public class TWDGameManager {
                 }
             }
             ficheiro.close();
-        } catch (IOException e) {
+        } catch (InvalidTWDInitialFileException | FileNotFoundException e) {
             e.printStackTrace();
             return false;
         }
