@@ -28,7 +28,7 @@ public class TWDGameManager {
         nrTurnos = 0;
     }
 
-    public boolean startGame(File ficheiroInicial) {
+    public boolean startGame(File ficheiroInicial) throws InvalidTWDInitialFileException, FileNotFoundException {
         reset();
         int count = 1;
         try {
@@ -962,6 +962,10 @@ public class TWDGameManager {
         pop[12] = "Chocho";
         pop[13] = "Farrokh Bulsara";
         return pop;
+    }
+
+    public Map<String, List<String>> getGameStatistics() {
+        return new HashMap<>();
     }
 
 }
