@@ -14,7 +14,9 @@ public class TWDGameManager {
     List<Creature> safeHeavenHumanos = new ArrayList<>();
     List<Creature> foraDeJogo = new ArrayList<>();
     int[] grid;
-    int first, totalCriaturas, totalEquipamentos, totalSafeHeavens, nrTurnos = 0, semMortes = 0, currentTeamId;
+    int first, totalEquipamentos, totalSafeHeavens, nrTurnos = 0, semMortes = 0, currentTeamId;
+    static int totalCriaturas;
+    static String errorLine;
 
     public TWDGameManager () {
     }
@@ -84,6 +86,12 @@ public class TWDGameManager {
                     }
                     break;
                     default:
+                        if (Integer.parseInt(linhaInfo[0]) > 0) {
+                            errorLine = Integer.parseInt(linhaInfo[0]) + ", " + Integer.parseInt(linhaInfo[1]) + ", " +
+                                    linhaInfo[2] + ", " + Integer.parseInt(linhaInfo[3]) + ", " +
+                                    Integer.parseInt(linhaInfo[4]);
+                            throw new InvalidTWDInitialFileException();
+                        }
                 }
             }
             ficheiro.close();
@@ -91,7 +99,12 @@ public class TWDGameManager {
             e.printStackTrace();
             return false;
         } catch (InvalidTWDInitialFileException inv) {
-            inv.validNrOfCreatures();
+            if (totalCriaturas < 2) {
+                inv.validNrOfCreatures();
+            } else if (!errorLine.isEmpty()) {
+                inv.validCreatureDefinition();
+                inv.getErroneousLine();
+            }
         }
         return true;
     }
@@ -950,7 +963,12 @@ public class TWDGameManager {
             e.printStackTrace();
             return false;
         } catch (InvalidTWDInitialFileException inv) {
-            inv.validNrOfCreatures();
+            if (totalCriaturas < 2) {
+                inv.validNrOfCreatures();
+            } else if (!errorLine.isEmpty()) {
+                inv.validCreatureDefinition();
+                inv.getErroneousLine();
+            }
         }
         return true;
     }
